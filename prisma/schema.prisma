@@ -1,0 +1,267 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                 String               @id @default(cuid())
+  name               String?
+  email              String               @unique
+  emailVerified      DateTime?
+  password           String?
+  image              String?
+  defaultTone        String?              @default("professional")
+  defaultLength      String?              @default("medium")
+  defaultLanguage    String?              @default("en")
+  customInstructions String?
+  createdAt          DateTime             @default(now())
+  updatedAt          DateTime             @updatedAt
+
+  accounts           Account[]
+  sessions           Session[]
+  emailGenerations   EmailGeneration[]
+  savedEmails        SavedEmail[]
+  customTones        CustomTone[]
+  usages             Usage[]
+  usageEvents        UsageEvent[]
+  organizationMembers OrganizationMember[]
+  createdTemplates   Template[]
+  createdSharedTemplates SharedTemplate[]
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+model PasswordResetToken {
+  id        String   @id @default(cuid())
+  email     String
+  token     String   @unique
+  expires   DateTime
+  createdAt DateTime @default(now())
+}
+
+model EmailGeneration {
+  id            String   @id @default(cuid())
+  userId        String
+  type          String   // GENERATE, REPLY, IMPROVE, ANALYZE, HUMANIZE, TRANSLATE, TEMPLATE
+  prompt        String
+  recipient     String?
+  tone          String?
+  length        String?
+  language      String?
+  sourceText    String?
+  outputSubject String?
+  outputBody    String
+  metadata      String?  // JSON string
+  isSuccessful  Boolean  @default(true)
+  createdAt     DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt])
+}
+
+model SavedEmail {
+  id             String   @id @default(cuid())
+  userId         String
+  title          String
+  category       String   @default("GENERATED") // GENERATED, REPLY, IMPROVED, ANALYZED, HUMANIZE, TRANSLATION, TEMPLATE, GENERAL
+  subject        String?
+  body           String
+  originalPrompt String?
+  recipient      String?
+  tone           String?
+  tags           String?  // comma-separated tags
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, category])
+}
+
+model Template {
+  id               String   @id @default(cuid())
+  userId           String?  // Null for built-in system templates
+  title            String
+  description      String
+  category         String   // WORK, BUSINESS, EDUCATION, PERSONAL, OFFICIAL
+  fields           String   // JSON array of field definitions
+  promptTemplate   String
+  defaultRecipient String?
+  defaultTone      String?  @default("professional")
+  isBuiltIn        Boolean  @default(false)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([category, isBuiltIn])
+}
+
+model CustomTone {
+  id           String   @id @default(cuid())
+  userId       String
+  name         String
+  description  String
+  instructions String
+  isDefault    Boolean  @default(false)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model Usage {
+  id        String   @id @default(cuid())
+  userId    String
+  date      String   // Format: YYYY-MM-DD
+  count     Int      @default(0) // Successful AI generation count (limit: 10)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, date])
+  @@index([userId, date])
+}
+
+model UsageEvent {
+  id             String   @id @default(cuid())
+  userId         String
+  organizationId String?
+  type           String   // GENERATE, REPLY, IMPROVE, ANALYZE, HUMANIZE, TRANSLATE, TEMPLATE
+  templateId     String?
+  tone           String?
+  isSuccessful   Boolean  @default(true)
+  createdAt      DateTime @default(now())
+
+  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  organization Organization? @relation(fields: [organizationId], references: [id], onDelete: SetNull)
+
+  @@index([userId, createdAt])
+  @@index([organizationId, createdAt])
+}
+
+model Organization {
+  id          String   @id @default(cuid())
+  name        String
+  slug        String   @unique
+  description String?
+  logo        String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  members         OrganizationMember[]
+  settings        OrganizationSettings?
+  sharedTemplates SharedTemplate[]
+  companyTone     CompanyTone?
+  brandVoice      BrandVoice?
+  usageEvents     UsageEvent[]
+}
+
+model OrganizationMember {
+  id             String   @id @default(cuid())
+  organizationId String
+  userId         String
+  role           String   @default("MEMBER") // OWNER, ADMIN, MEMBER
+  joinedAt       DateTime @default(now())
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([organizationId, userId])
+  @@index([organizationId])
+  @@index([userId])
+}
+
+model OrganizationSettings {
+  id                   String   @id @default(cuid())
+  organizationId       String   @unique
+  allowMemberTemplates Boolean  @default(true)
+  enforceBrandVoice    Boolean  @default(false)
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+}
+
+model SharedTemplate {
+  id               String   @id @default(cuid())
+  organizationId   String
+  createdById      String
+  title            String
+  description      String
+  category         String   @default("WORK")
+  fields           String   // JSON string
+  promptTemplate   String
+  defaultRecipient String?
+  defaultTone      String?  @default("professional")
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  createdBy    User         @relation(fields: [createdById], references: [id], onDelete: Cascade)
+
+  @@index([organizationId])
+}
+
+model CompanyTone {
+  id             String   @id @default(cuid())
+  organizationId String   @unique
+  description    String
+  rules          String?
+  isActive       Boolean  @default(true)
+  updatedAt      DateTime @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+}
+
+model BrandVoice {
+  id             String   @id @default(cuid())
+  organizationId String   @unique
+  personality    String   @default("Friendly, Confident, Professional")
+  wordsToUse     String   @default("Customer, Partner, Team")
+  wordsToAvoid   String   @default("Unfortunately, Esteemed, Kindly")
+  updatedAt      DateTime @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+}
