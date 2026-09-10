@@ -12,15 +12,15 @@ import type {
   TranslationOutput,
 } from "@/types";
 
+import type { ImageDataInput } from "@/types";
+
 // Fallback sequence for Google Gemini models
 const GEMINI_CANDIDATE_MODELS = [
-  "gemini-3.6-flash",
-  "gemini-3.5-flash",
-  "gemini-3.7-flash",
-  "gemini-3.8-flash",
-  "gemini-2.5-flash-lite",
-  "gemini-flash-latest",
+  "gemini-2.5-flash",
+  "gemini-2.0-flash",
   "gemini-1.5-flash",
+  "gemini-flash-latest",
+  "gemini-2.5-flash-lite",
 ];
 
 // Global cache for the active/verified working model
@@ -40,19 +40,49 @@ export class GeminiProvider implements AIProvider {
   private apiKey: string;
   private preferredModel: string;
 
-  constructor(apiKey?: string, model = "gemini-3.6-flash") {
+  constructor(apiKey?: string, model = "gemini-2.5-flash") {
     this.apiKey = apiKey || process.env.GEMINI_API_KEY || "";
-    this.preferredModel = model || "gemini-3.6-flash";
+    this.preferredModel = model || "gemini-2.5-flash";
   }
 
-  private async executeGeminiRequest(model: string, systemPrompt: string, userPrompt: string, jsonMode = true): Promise<string> {
+  private async executeGeminiRequest(
+    model: string,
+    systemPrompt: string,
+    userPrompt: string,
+    jsonMode = true,
+    images?: ImageDataInput[]
+  ): Promise<string> {
     const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${this.apiKey}`;
+
+    const parts: any[] = [];
+    parts.push({ text: `${systemPrompt}\n\nUser Input / Request:\n${userPrompt || "Process the attached image/screenshot context."}` });
+
+    if (images && images.length > 0) {
+      for (const img of images) {
+        if (!img.base64) continue;
+        let base64Data = img.base64;
+        let mimeType = img.mimeType || "image/jpeg";
+        if (base64Data.startsWith("data:")) {
+          const match = base64Data.match(/^data:([^;]+);base64,(.+)$/);
+          if (match) {
+            mimeType = match[1];
+            base64Data = match[2];
+          }
+        }
+        parts.push({
+          inlineData: {
+            mimeType: mimeType,
+            data: base64Data,
+          },
+        });
+      }
+    }
 
     const body: Record<string, any> = {
       contents: [
         {
           role: "user",
-          parts: [{ text: `${systemPrompt}\n\nUser Input:\n${userPrompt}` }],
+          parts,
         },
       ],
       generationConfig: {
@@ -90,7 +120,12 @@ export class GeminiProvider implements AIProvider {
     return outputText;
   }
 
-  private async callGemini(systemPrompt: string, userPrompt: string, jsonMode = true): Promise<string> {
+  private async callGemini(
+    systemPrompt: string,
+    userPrompt: string,
+    jsonMode = true,
+    images?: ImageDataInput[]
+  ): Promise<string> {
     if (!this.apiKey) {
       throw new Error("Gemini API key is not configured.");
     }
@@ -108,7 +143,7 @@ export class GeminiProvider implements AIProvider {
 
     for (const model of candidateList) {
       try {
-        const result = await this.executeGeminiRequest(model, systemPrompt, userPrompt, jsonMode);
+        const result = await this.executeGeminiRequest(model, systemPrompt, userPrompt, jsonMode, images);
         // Successful generation! Cache the working model for subsequent calls
         activeWorkingModel = model;
         return result;
@@ -140,6 +175,7 @@ export class GeminiProvider implements AIProvider {
   }
 
   async generateEmail(input: EmailGenerationInput): Promise<EmailGenerationOutput> {
+    const hasImages = Boolean(input.images && input.images.length > 0);
     const systemPrompt = `You are MailPilot, an expert AI email assistant.
 Core Philosophy: "Tell MailPilot what you want to say. MailPilot writes the email."
 Rules:
@@ -147,6 +183,7 @@ Rules:
 2. Adapt tone to: ${input.tone || "professional"}.
 3. Length: ${input.length || "medium"}.
 4. Recipient category: ${input.recipient || "Colleague"}.
+${hasImages ? "5. An image/screenshot is attached. Inspect the image, accurately read all text, tables, requests, invoices, messages, or information displayed, and draft the email based on the image context and user instructions." : ""}
 ${input.customToneInstructions ? `Custom Tone Instructions: ${input.customToneInstructions}` : ""}
 ${input.companyTone ? `Company Tone: ${input.companyTone}` : ""}
 ${input.brandVoice ? `Brand Voice: Personality: ${input.brandVoice.personality || ""}. Words to use: ${input.brandVoice.wordsToUse || ""}. Words to avoid: ${input.brandVoice.wordsToAvoid || ""}.` : ""}
@@ -160,7 +197,8 @@ Return valid JSON:
   "intent": "Brief description of the email purpose"
 }`;
 
-    const raw = await this.callGemini(systemPrompt, input.prompt, true);
+    const userText = input.prompt || (hasImages ? "Draft a professional email based on the attached image/screenshot." : "Write email");
+    const raw = await this.callGemini(systemPrompt, userText, true, input.images);
     const parsed = extractJson<Record<string, any>>(raw);
     return {
       subject: parsed.subject || "Email from MailPilot",
@@ -171,13 +209,15 @@ Return valid JSON:
   }
 
   async generateReply(input: ReplyInput): Promise<EmailGenerationOutput> {
+    const hasImages = Boolean(input.images && input.images.length > 0);
     const systemPrompt = `You are MailPilot Reply Generator.
-You must analyze the received email and draft a contextual, accurate reply.
+You must analyze the received email or screenshot message and draft a contextual, accurate reply.
 Rules:
-1. Preserve factual context from the received email.
+1. Preserve factual context from the received email or screenshot.
 2. If user provided intention: "${input.userIntent || input.intentPreset || "polite response"}", craft the reply fulfilling that exact intention.
 3. Tone: ${input.tone || "professional"}. Length: ${input.length || "medium"}.
 4. Never invent factual commitments not specified by user.
+${hasImages ? "5. An image/screenshot is attached (e.g. screenshot of an email, Slack chat, WhatsApp conversation, ticket, or DM). Read and understand the incoming message/conversation shown in the image, and draft the reply fulfilling the user's intent." : ""}
 
 Return valid JSON:
 {
@@ -187,7 +227,8 @@ Return valid JSON:
   "intent": "reply"
 }`;
 
-    const raw = await this.callGemini(systemPrompt, `Received Email:\n${input.receivedEmail}\n\nMy Intent:\n${input.userIntent || input.intentPreset || "Respond appropriately"}`, true);
+    const userText = `Received Email/Message:\n${input.receivedEmail || (hasImages ? "[See attached image/screenshot]" : "")}\n\nMy Intent:\n${input.userIntent || input.intentPreset || "Respond appropriately"}`;
+    const raw = await this.callGemini(systemPrompt, userText, true, input.images);
     const parsed = extractJson<Record<string, any>>(raw);
     return {
       subject: parsed.subject || "Re: Update",
@@ -198,12 +239,14 @@ Return valid JSON:
   }
 
   async improveEmail(input: EmailImprovementInput): Promise<EmailImprovementOutput> {
+    const hasImages = Boolean(input.images && input.images.length > 0);
     const systemPrompt = `You are MailPilot Email Improver.
 Transform rough, informal, or poorly structured emails into polished, professional communication.
 Rules:
 1. Do not alter facts, dates, amounts, or commitments.
 2. Tone requested: ${input.desiredTone || "professional"}.
 3. Summarize specific changes made (e.g. "Fixed grammatical errors", "Softened tone", "Added clear call to action").
+${hasImages ? "4. An image/screenshot is attached. Read and extract the email text from the image, and polish it." : ""}
 
 Return valid JSON:
 {
@@ -214,10 +257,11 @@ Return valid JSON:
   "readabilityScore": "High"
 }`;
 
-    const raw = await this.callGemini(systemPrompt, input.emailToImprove, true);
+    const userText = input.emailToImprove || (hasImages ? "[See attached image]" : "");
+    const raw = await this.callGemini(systemPrompt, userText, true, input.images);
     const parsed = extractJson<Record<string, any>>(raw);
     return {
-      original: input.emailToImprove,
+      original: input.emailToImprove || "Email from attached image",
       improved: parsed.improved || input.emailToImprove,
       subject: parsed.subject,
       changesSummary: parsed.changesSummary || ["Enhanced phrasing and tone"],
@@ -225,9 +269,11 @@ Return valid JSON:
     };
   }
 
-  async analyzeEmail(input: string): Promise<EmailAnalysisOutput> {
+  async analyzeEmail(input: string, images?: ImageDataInput[]): Promise<EmailAnalysisOutput> {
+    const hasImages = Boolean(images && images.length > 0);
     const systemPrompt = `You are MailPilot Email Analyzer.
-Analyze the email deeply for tone, sentiment, urgency, intent, action items, dates, deadlines, questions, and provide a concise summary with suggested quick reply options.
+Analyze the email or document/screenshot deeply for tone, sentiment, urgency, intent, action items, dates, deadlines, questions, and provide a concise summary with suggested quick reply options.
+${hasImages ? "An image/screenshot is attached. Read and extract all text and context from the image to perform the complete analysis." : ""}
 
 Return valid JSON:
 {
@@ -250,7 +296,8 @@ Return valid JSON:
   ]
 }`;
 
-    const raw = await this.callGemini(systemPrompt, input, true);
+    const userText = input || (hasImages ? "[See attached screenshot/email image for analysis]" : "");
+    const raw = await this.callGemini(systemPrompt, userText, true, images);
     return extractJson<EmailAnalysisOutput>(raw);
   }
 

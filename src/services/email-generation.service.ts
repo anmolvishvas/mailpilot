@@ -50,8 +50,9 @@ export class EmailGenerationService {
       }
     }
 
+    const hasImages = Boolean(validated.images && validated.images.length > 0);
     const aiInput: EmailGenerationInput = {
-      prompt: validated.prompt,
+      prompt: validated.prompt || (hasImages ? "Draft email based on attached image" : ""),
       recipient: validated.recipient || "Colleague",
       tone: validated.tone || user?.defaultTone || "professional",
       length: (validated.length as any) || (user?.defaultLength as any) || "medium",
@@ -59,6 +60,7 @@ export class EmailGenerationService {
       companyTone: companyToneStr,
       brandVoice: brandVoiceObj,
       additionalInstructions: validated.additionalInstructions || user?.customInstructions || undefined,
+      images: validated.images,
     };
 
     // 4. Call AI Provider
@@ -78,11 +80,12 @@ export class EmailGenerationService {
     });
 
     // 6. Log generation to history
+    const promptLog = validated.prompt || (hasImages ? "[Image/Screenshot Uploaded]" : "Email generation");
     const generationLog = await prisma.emailGeneration.create({
       data: {
         userId,
         type: "GENERATE",
-        prompt: validated.prompt,
+        prompt: promptLog,
         recipient: validated.recipient,
         tone: aiInput.tone,
         length: aiInput.length,

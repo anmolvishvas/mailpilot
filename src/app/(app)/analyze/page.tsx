@@ -6,19 +6,21 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { AnalysisView } from "@/components/email/AnalysisView";
+import { ImageDropzone } from "@/components/email/ImageDropzone";
 import { useToast } from "@/components/ui/toast";
-import type { EmailAnalysisOutput } from "@/types";
+import type { EmailAnalysisOutput, ImageDataInput } from "@/types";
 
 export default function AnalyzePage() {
   const { success, error } = useToast();
 
   const [inputEmail, setInputEmail] = React.useState("");
+  const [images, setImages] = React.useState<ImageDataInput[]>([]);
   const [loading, setLoading] = React.useState(false);
   const [analysis, setAnalysis] = React.useState<EmailAnalysisOutput | null>(null);
 
   const handleAnalyze = async () => {
-    if (!inputEmail.trim()) {
-      error("Please paste an email to analyze!");
+    if (!inputEmail.trim() && images.length === 0) {
+      error("Please paste an email or upload a screenshot to analyze!");
       return;
     }
 
@@ -27,7 +29,10 @@ export default function AnalyzePage() {
       const res = await fetch("/api/email/analyze", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: inputEmail.trim() }),
+        body: JSON.stringify({
+          email: inputEmail.trim(),
+          images: images.length > 0 ? images : undefined,
+        }),
       });
 
       const data = await res.json();
@@ -55,7 +60,7 @@ export default function AnalyzePage() {
     <div className="flex flex-col gap-6 max-w-4xl pb-10">
       <div>
         <h2 className="text-xl sm:text-2xl font-semibold tracking-tight text-foreground">Email Analysis</h2>
-        <p className="text-xs text-muted-foreground mt-0.5">Extract tone, sentiment, urgency, deadlines, action items, and draft contextual replies.</p>
+        <p className="text-xs text-muted-foreground mt-0.5">Extract tone, sentiment, urgency, deadlines, action items, and draft contextual replies from text or screenshots.</p>
       </div>
 
       <Card className="rounded-xl border border-border bg-card shadow-sm overflow-hidden">
@@ -68,15 +73,22 @@ export default function AnalyzePage() {
               value={inputEmail}
               onChange={(e) => setInputEmail(e.target.value)}
               placeholder="Paste any received or sent email to analyze..."
-              className="min-h-[120px] text-sm p-3 rounded-lg bg-background border border-input focus:border-ring"
+              className="min-h-[100px] text-sm p-3 rounded-lg bg-background border border-input focus:border-ring"
             />
           </div>
+
+          <ImageDropzone
+            images={images}
+            setImages={setImages}
+            label="Or Attach Screenshot / Document Photo"
+            placeholder="Drop, browse, or paste screenshot (Ctrl+V) to analyze"
+          />
 
           <div className="flex justify-end pt-1">
             <Button
               size="sm"
               onClick={handleAnalyze}
-              disabled={loading || !inputEmail.trim()}
+              disabled={loading || (!inputEmail.trim() && images.length === 0)}
               className="h-8 px-4 gap-1.5 rounded-lg text-xs font-medium"
             >
               <BarChart3 className="h-3.5 w-3.5" />

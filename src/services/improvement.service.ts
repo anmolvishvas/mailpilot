@@ -21,6 +21,7 @@ export class ImprovementService {
       emailToImprove: validated.emailToImprove,
       desiredTone: validated.desiredTone,
       customInstructions: validated.customInstructions,
+      images: validated.images,
     };
 
     const aiProvider = getAIProvider();
@@ -41,13 +42,14 @@ export class ImprovementService {
         userId,
         type: "IMPROVE",
         prompt: `Improve email (${validated.desiredTone})`,
-        sourceText: validated.emailToImprove,
+        sourceText: validated.emailToImprove || (validated.images && validated.images.length > 0 ? `[Image attached: ${validated.images.length} image(s)]` : ""),
         tone: validated.desiredTone,
         outputSubject: result.subject || "Improved Email",
         outputBody: result.improved,
         metadata: JSON.stringify({
           changesSummary: result.changesSummary,
           readabilityScore: result.readabilityScore,
+          hasImages: Boolean(validated.images && validated.images.length > 0),
         }),
         isSuccessful: true,
       },

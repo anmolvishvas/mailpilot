@@ -8,13 +8,15 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { DiffViewer } from "@/components/email/DiffViewer";
 import { OutputActions } from "@/components/email/OutputActions";
+import { ImageDropzone } from "@/components/email/ImageDropzone";
 import { useToast } from "@/components/ui/toast";
-import type { EmailImprovementOutput } from "@/types";
+import type { EmailImprovementOutput, ImageDataInput } from "@/types";
 
 export default function ImprovePage() {
   const { success, error } = useToast();
 
   const [inputEmail, setInputEmail] = React.useState("");
+  const [images, setImages] = React.useState<ImageDataInput[]>([]);
   const [desiredTone, setDesiredTone] = React.useState<"professional" | "friendly" | "concise" | "assertive" | "humanize">("professional");
   const [customInstructions, setCustomInstructions] = React.useState("");
 
@@ -24,8 +26,8 @@ export default function ImprovePage() {
   const [isEditing, setIsEditing] = React.useState(false);
 
   const handleImprove = async (toneOverride?: any) => {
-    if (!inputEmail.trim()) {
-      error("Please paste the email you want to improve!");
+    if (!inputEmail.trim() && images.length === 0) {
+      error("Please paste the email or upload a screenshot/image to improve!");
       return;
     }
 
@@ -40,6 +42,7 @@ export default function ImprovePage() {
           emailToImprove: inputEmail.trim(),
           desiredTone: targetTone,
           customInstructions: customInstructions.trim() || undefined,
+          images: images.length > 0 ? images : undefined,
         }),
       });
 
@@ -95,6 +98,14 @@ export default function ImprovePage() {
             />
           </div>
 
+          {/* Multimodal Screenshot / Image Dropzone */}
+          <ImageDropzone
+            images={images}
+            setImages={setImages}
+            label="Or Attach Draft Screenshot / Image (Optional)"
+            placeholder="Drop, browse, or paste image (Ctrl+V) of your draft or rough note"
+          />
+
           {/* Tone Presets */}
           <div className="flex flex-col gap-1.5">
             <label className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
@@ -125,7 +136,7 @@ export default function ImprovePage() {
             <Button
               size="sm"
               onClick={() => handleImprove()}
-              disabled={loading || !inputEmail.trim()}
+              disabled={loading || (!inputEmail.trim() && images.length === 0)}
               className="h-8 px-4 gap-1.5 rounded-lg text-xs font-medium"
             >
               <Wand2 className="h-3.5 w-3.5" />

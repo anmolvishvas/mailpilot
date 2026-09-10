@@ -44,14 +44,16 @@ export class ReplyService {
       }
     }
 
+    const hasImages = Boolean(validated.images && validated.images.length > 0);
     const aiInput: ReplyInput = {
-      receivedEmail: validated.receivedEmail,
+      receivedEmail: validated.receivedEmail || (hasImages ? "[See attached image/screenshot]" : ""),
       userIntent: validated.userIntent,
       intentPreset: validated.intentPreset,
       tone: validated.tone || "professional",
       length: (validated.length as any) || "medium",
       companyTone: companyToneStr,
       brandVoice: brandVoiceObj,
+      images: validated.images,
     };
 
     // 3. Call AI
@@ -71,12 +73,13 @@ export class ReplyService {
     });
 
     // 5. Save generation history
+    const sourceLog = validated.receivedEmail || (hasImages ? "[Screenshot / Image of Received Message]" : "Reply");
     const generationLog = await prisma.emailGeneration.create({
       data: {
         userId,
         type: "REPLY",
-        prompt: validated.userIntent || validated.intentPreset || "Reply to email",
-        sourceText: validated.receivedEmail,
+        prompt: validated.userIntent || validated.intentPreset || "Reply to message/screenshot",
+        sourceText: sourceLog,
         tone: aiInput.tone,
         length: aiInput.length,
         outputSubject: result.subject,

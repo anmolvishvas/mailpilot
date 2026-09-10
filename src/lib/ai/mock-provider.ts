@@ -16,7 +16,7 @@ export class MockAIProvider implements AIProvider {
   name = "MailPilot Heuristic AI Engine (Local)";
 
   async generateEmail(input: EmailGenerationInput): Promise<EmailGenerationOutput> {
-    const promptLower = input.prompt.toLowerCase();
+    const promptLower = (input.prompt || "").toLowerCase();
     const recipient = input.recipient || "Manager";
     const tone = input.tone || "professional";
     const length = input.length || "medium";
@@ -101,9 +101,10 @@ export class MockAIProvider implements AIProvider {
       ];
     } else {
       // General prompt transformation
-      subject = `Update regarding ${input.prompt.slice(0, 30).trim()}...`;
+      const promptText = input.prompt ? input.prompt.trim() : "the attached screenshot / details";
+      subject = `Update regarding ${promptText.slice(0, 30)}...`;
       bodyParagraphs = [
-        `I am writing to you regarding ${input.prompt.trim()}.`,
+        `I am writing to you regarding ${promptText}.`,
         "I wanted to ensure we are aligned and provide full clarity on the key details.",
         "Please let me know if you have any questions or if you would like any additional information.",
       ];
@@ -131,7 +132,7 @@ export class MockAIProvider implements AIProvider {
   }
 
   async generateReply(input: ReplyInput): Promise<EmailGenerationOutput> {
-    const receivedLower = input.receivedEmail.toLowerCase();
+    const receivedLower = (input.receivedEmail || "").toLowerCase();
     const intentLower = (input.userIntent || input.intentPreset || "").toLowerCase();
     const tone = input.tone || "professional";
 
@@ -162,7 +163,7 @@ export class MockAIProvider implements AIProvider {
   }
 
   async improveEmail(input: EmailImprovementInput): Promise<EmailImprovementOutput> {
-    const original = input.emailToImprove.trim();
+    const original = (input.emailToImprove || "").trim();
     const tone = input.desiredTone || "professional";
 
     let improved = "";

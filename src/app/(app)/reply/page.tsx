@@ -10,13 +10,15 @@ import { Badge } from "@/components/ui/badge";
 import { OutputActions } from "@/components/email/OutputActions";
 import { QuickRewriteBar } from "@/components/email/QuickRewriteBar";
 import { useToast } from "@/components/ui/toast";
-import type { LengthType, EmailGenerationOutput } from "@/types";
+import { ImageDropzone } from "@/components/email/ImageDropzone";
+import type { LengthType, EmailGenerationOutput, ImageDataInput } from "@/types";
 import { standardTones, lengths } from "@/components/email/RecipientToneSelector";
 
 export default function ReplyPage() {
   const { success, error } = useToast();
 
   const [receivedEmail, setReceivedEmail] = React.useState("");
+  const [images, setImages] = React.useState<ImageDataInput[]>([]);
   const [userIntent, setUserIntent] = React.useState("");
   const [tone, setTone] = React.useState("professional");
   const [length, setLength] = React.useState<LengthType>("medium");
@@ -40,8 +42,8 @@ export default function ReplyPage() {
   }, []);
 
   const handleGenerateReply = async (presetIntent?: string) => {
-    if (!receivedEmail.trim()) {
-      error("Please paste the email you received!");
+    if (!receivedEmail.trim() && images.length === 0) {
+      error("Please paste the email or upload a screenshot of the message!");
       return;
     }
 
@@ -57,6 +59,7 @@ export default function ReplyPage() {
           userIntent: finalIntent.trim() || undefined,
           tone,
           length,
+          images: images.length > 0 ? images : undefined,
         }),
       });
 
@@ -92,7 +95,7 @@ export default function ReplyPage() {
     <div className="flex flex-col gap-6 max-w-4xl pb-10">
       <div>
         <h2 className="text-xl sm:text-2xl font-semibold tracking-tight text-foreground">Reply Generator</h2>
-        <p className="text-xs text-muted-foreground mt-0.5">Paste an incoming message and provide your intent to craft a contextual reply.</p>
+        <p className="text-xs text-muted-foreground mt-0.5">Paste an incoming message or upload a screenshot (Slack, WhatsApp, email) to craft a contextual reply.</p>
       </div>
 
       <Card className="rounded-xl border border-border bg-card shadow-sm overflow-hidden">
@@ -100,27 +103,35 @@ export default function ReplyPage() {
           {/* Step 1: Received Email */}
           <div className="flex flex-col gap-1.5">
             <label className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground flex items-center justify-between">
-              <span>Received Email</span>
-              <span className="text-[10px] text-muted-foreground">Required</span>
+              <span>Received Email / Message</span>
+              <span className="text-[10px] text-muted-foreground">Text or Screenshot</span>
             </label>
             <Textarea
               value={receivedEmail}
               onChange={(e) => setReceivedEmail(e.target.value)}
-              placeholder="Paste the received message here..."
-              className="min-h-[110px] text-sm p-3 rounded-lg bg-background border border-input focus:border-ring"
+              placeholder="Paste the received message text here, or attach a screenshot below..."
+              className="min-h-[100px] text-sm p-3 rounded-lg bg-background border border-input focus:border-ring"
             />
           </div>
+
+          {/* Multimodal Screenshot / Image Dropzone */}
+          <ImageDropzone
+            images={images}
+            setImages={setImages}
+            label="Or Attach Screenshot / Image"
+            placeholder="Drop, browse, or paste screenshot (Ctrl+V) — Slack, WhatsApp, email, ticket"
+          />
 
           {/* Step 2: What do you want to say? */}
           <div className="flex flex-col gap-1.5">
             <label className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground flex items-center justify-between">
-              <span>Your Intent</span>
+              <span>Your Intent / Key Points</span>
               <span className="text-[10px] text-muted-foreground">Optional</span>
             </label>
             <Input
               value={userIntent}
               onChange={(e) => setUserIntent(e.target.value)}
-              placeholder="e.g. Yes, Monday works for me / Decline politely"
+              placeholder="e.g. Confirm meeting on Monday / Politely decline due to schedule conflict"
               className="rounded-lg h-9 text-xs"
             />
           </div>
@@ -199,7 +210,7 @@ export default function ReplyPage() {
             <Button
               size="sm"
               onClick={() => handleGenerateReply()}
-              disabled={loading || !receivedEmail.trim()}
+              disabled={loading || (!receivedEmail.trim() && images.length === 0)}
               className="h-8 px-4 gap-1.5 rounded-lg text-xs font-medium"
             >
               <Send className="h-3.5 w-3.5" />

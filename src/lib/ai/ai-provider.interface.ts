@@ -9,6 +9,7 @@ import type {
   HumanizeOutput,
   TranslationInput,
   TranslationOutput,
+  ImageDataInput,
 } from "@/types";
 
 export interface AIProvider {
@@ -16,7 +17,7 @@ export interface AIProvider {
   generateEmail(input: EmailGenerationInput): Promise<EmailGenerationOutput>;
   generateReply(input: ReplyInput): Promise<EmailGenerationOutput>;
   improveEmail(input: EmailImprovementInput): Promise<EmailImprovementOutput>;
-  analyzeEmail(input: string): Promise<EmailAnalysisOutput>;
+  analyzeEmail(input: string, images?: ImageDataInput[]): Promise<EmailAnalysisOutput>;
   humanizeEmail(input: HumanizeInput): Promise<HumanizeOutput>;
   translateEmail(input: TranslationInput): Promise<TranslationOutput>;
 }

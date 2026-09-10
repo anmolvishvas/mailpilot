@@ -17,8 +17,9 @@ export class AnalysisService {
 
     await usageService.checkGenerationLimit(userId);
 
+    const hasImages = Boolean(validated.images && validated.images.length > 0);
     const aiProvider = getAIProvider();
-    const result = await aiProvider.analyzeEmail(validated.email);
+    const result = await aiProvider.analyzeEmail(validated.email || "", validated.images);
 
     if (!result || !result.summary) {
       throw new Error("Failed to analyze email. Please try again.");
@@ -30,12 +31,13 @@ export class AnalysisService {
       tone: result.tone,
     });
 
+    const sourceLog = validated.email || (hasImages ? "[Screenshot / Image of Email]" : "Email Analysis");
     const generationLog = await prisma.emailGeneration.create({
       data: {
         userId,
         type: "ANALYZE",
-        prompt: "Analyze email content",
-        sourceText: validated.email,
+        prompt: "Analyze email / screenshot content",
+        sourceText: sourceLog,
         tone: result.tone,
         outputSubject: `Analysis: ${result.intent.slice(0, 40)}`,
         outputBody: result.summary,

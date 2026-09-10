@@ -43,6 +43,12 @@ export type LanguageType =
   | "ja"
   | "ko";
 
+export interface ImageDataInput {
+  base64: string;
+  mimeType?: string;
+  name?: string;
+}
+
 export interface EmailGenerationInput {
   prompt: string;
   recipient?: string;
@@ -56,6 +62,7 @@ export interface EmailGenerationInput {
     wordsToAvoid?: string;
   };
   additionalInstructions?: string;
+  images?: ImageDataInput[];
 }
 
 export interface EmailGenerationOutput {
@@ -67,7 +74,7 @@ export interface EmailGenerationOutput {
 }
 
 export interface ReplyInput {
-  receivedEmail: string;
+  receivedEmail?: string;
   userIntent?: string;
   intentPreset?: "accept" | "decline" | "reschedule" | "clarify" | "acknowledge";
   tone?: string;
@@ -78,12 +85,14 @@ export interface ReplyInput {
     wordsToUse?: string;
     wordsToAvoid?: string;
   };
+  images?: ImageDataInput[];
 }
 
 export interface EmailImprovementInput {
   emailToImprove: string;
   desiredTone?: "professional" | "friendly" | "concise" | "assertive" | "humanize";
   customInstructions?: string;
+  images?: ImageDataInput[];
 }
 
 export interface EmailImprovementOutput {

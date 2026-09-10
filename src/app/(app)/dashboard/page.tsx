@@ -24,14 +24,16 @@ import { Badge } from "@/components/ui/badge";
 import { RecipientToneSelector } from "@/components/email/RecipientToneSelector";
 import { OutputActions } from "@/components/email/OutputActions";
 import { QuickRewriteBar } from "@/components/email/QuickRewriteBar";
+import { ImageDropzone } from "@/components/email/ImageDropzone";
 import { useToast } from "@/components/ui/toast";
-import type { LengthType, EmailGenerationOutput } from "@/types";
+import type { LengthType, EmailGenerationOutput, ImageDataInput } from "@/types";
 
 export default function DashboardPage() {
   const { data: session } = useSession();
   const { success, error } = useToast();
 
   const [prompt, setPrompt] = React.useState("");
+  const [images, setImages] = React.useState<ImageDataInput[]>([]);
   const [recipient, setRecipient] = React.useState("Manager");
   const [tone, setTone] = React.useState("professional");
   const [length, setLength] = React.useState<LengthType>("medium");
@@ -72,8 +74,8 @@ export default function DashboardPage() {
   }, []);
 
   const handleGenerate = async (customInstructionsOverride?: string) => {
-    if (!prompt.trim()) {
-      error("Please tell MailPilot what you want to say!");
+    if (!prompt.trim() && images.length === 0) {
+      error("Please tell MailPilot what you want to say or attach an image/screenshot!");
       return;
     }
 
@@ -103,6 +105,7 @@ export default function DashboardPage() {
           customToneInstructions: selectedCustomToneInstr,
           organizationId: activeOrg,
           additionalInstructions: customInstructionsOverride,
+          images: images.length > 0 ? images : undefined,
         }),
       });
 
@@ -220,6 +223,14 @@ export default function DashboardPage() {
             )}
           </div>
 
+          {/* Multimodal Screenshot / Image Dropzone */}
+          <ImageDropzone
+            images={images}
+            setImages={setImages}
+            label="Attach Image or Screenshot (Optional)"
+            placeholder="Drop, browse, or paste image (Ctrl+V) — invoice, notes, message screenshot"
+          />
+
           {/* Controls: Recipient, Tone, Length */}
           <RecipientToneSelector
             recipient={recipient}
@@ -242,7 +253,7 @@ export default function DashboardPage() {
             <Button
               size="sm"
               onClick={() => handleGenerate()}
-              disabled={loading || !prompt.trim()}
+              disabled={loading || (!prompt.trim() && images.length === 0)}
               className="w-full sm:w-auto h-8 px-4 gap-1.5 rounded-lg text-xs font-medium"
             >
               <Sparkles className="h-3.5 w-3.5" />
