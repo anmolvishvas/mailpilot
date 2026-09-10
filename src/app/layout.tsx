@@ -7,7 +7,15 @@ import { ToastProvider } from "@/components/ui/toast";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 
+const appUrl =
+  process.env.NEXT_PUBLIC_APP_URL && process.env.NEXT_PUBLIC_APP_URL.trim() !== ""
+    ? process.env.NEXT_PUBLIC_APP_URL
+    : process.env.VERCEL_URL
+    ? `https://${process.env.VERCEL_URL}`
+    : "https://mailpilot.vercel.app";
+
 export const metadata: Metadata = {
+  metadataBase: new URL(appUrl.startsWith("http") ? appUrl : `https://${appUrl}`),
   title: "MailPilot — Free AI Email Writer & Email Assistant",
   description:
     "Write, reply, improve, analyze and translate emails with AI. MailPilot is a 100% free AI email assistant for individuals and teams.",
