@@ -113,28 +113,31 @@ Saludos cordiales,
     setTimeout(() => setCopied(false), 2000);
   };
 
+  const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
+
   return (
     <div className="flex min-h-screen flex-col bg-background text-foreground">
       {/* Top Banner: 100% Free Promise */}
-      <div className="bg-gradient-to-r from-primary/90 via-blue-600 to-indigo-600 px-4 py-2 text-center text-xs font-semibold text-white">
-        <span className="inline-flex items-center gap-1.5">
-          <Sparkles className="h-3.5 w-3.5" />
-          <span>MailPilot is 100% Free. No credit cards. No subscriptions. 10 free AI generations every day for everyone!</span>
+      <div className="bg-gradient-to-r from-primary/90 via-blue-600 to-indigo-600 px-3 py-1.5 sm:py-2 text-center text-[11px] sm:text-xs font-semibold text-white">
+        <span className="inline-flex items-center gap-1.5 flex-wrap justify-center">
+          <Sparkles className="h-3.5 w-3.5 shrink-0" />
+          <span>100% Free Forever • 10 Free AI Generations Every Day • No Credit Card Required</span>
         </span>
       </div>
 
       {/* Navigation */}
-      <header className="sticky top-0 z-40 flex h-16 w-full items-center justify-between border-b border-border/80 bg-background/80 px-4 md:px-8 backdrop-blur-md">
+      <header className="sticky top-0 z-40 flex h-16 w-full items-center justify-between border-b border-border/80 bg-background/80 px-4 sm:px-6 md:px-8 backdrop-blur-md">
         <Link href="/" className="flex items-center gap-2.5 font-bold tracking-tight">
           <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-tr from-primary to-blue-400 text-white shadow-md shadow-primary/25">
             <Mail className="h-5 w-5" />
           </div>
           <div className="flex flex-col">
-            <span className="text-lg font-bold leading-none">MailPilot</span>
+            <span className="text-base sm:text-lg font-bold leading-none">MailPilot</span>
             <span className="text-[10px] text-muted-foreground font-medium">Free AI Email Assistant</span>
           </div>
         </Link>
 
+        {/* Desktop Navigation Links */}
         <nav className="hidden md:flex items-center gap-6 text-sm font-medium text-muted-foreground">
           <a href="#features" className="hover:text-foreground transition-colors">Features</a>
           <a href="#demo" className="hover:text-foreground transition-colors">Interactive Demo</a>
@@ -142,7 +145,8 @@ Saludos cordiales,
           <a href="#how-it-works" className="hover:text-foreground transition-colors">How It Works</a>
         </nav>
 
-        <div className="flex items-center gap-3">
+        {/* Desktop Action Buttons */}
+        <div className="hidden sm:flex items-center gap-3">
           <ThemeToggle />
           <Link href="/login">
             <Button variant="ghost" size="sm" className="rounded-xl font-medium">
@@ -151,7 +155,22 @@ Saludos cordiales,
           </Link>
           <Link href="/register">
             <Button size="sm" className="rounded-xl font-semibold shadow-md shadow-primary/20">
-              Start Writing — It's Free
+              Start Writing Free
+            </Button>
+          </Link>
+        </div>
+
+        {/* Mobile Action Buttons + Hamburger */}
+        <div className="flex sm:hidden items-center gap-2">
+          <ThemeToggle />
+          <Link href="/login">
+            <Button variant="ghost" size="sm" className="h-8 px-2.5 text-xs rounded-lg">
+              Sign In
+            </Button>
+          </Link>
+          <Link href="/register">
+            <Button size="sm" className="h-8 px-3 text-xs font-semibold rounded-lg shadow-sm">
+              Try Free
             </Button>
           </Link>
         </div>

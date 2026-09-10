@@ -4,7 +4,27 @@ import * as React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { signOut, useSession } from "next-auth/react";
-import { Menu, User as UserIcon, LogOut, Settings, Sparkles, Building2 } from "lucide-react";
+import {
+  Menu,
+  X,
+  User as UserIcon,
+  LogOut,
+  Settings,
+  Sparkles,
+  Building2,
+  Mail,
+  Send,
+  Wand2,
+  BarChart3,
+  Bot,
+  Languages,
+  FileText,
+  History,
+  Sliders,
+  Users,
+  FolderLock,
+  Volume2,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { UsagePill } from "./UsagePill";
 import { ThemeToggle } from "./ThemeToggle";
@@ -15,17 +35,54 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { AppSidebar } from "./AppSidebar";
-import { Dialog } from "@/components/ui/dialog";
+import { cn } from "@/lib/utils";
+import { Badge } from "@/components/ui/badge";
 
 interface HeaderProps {
   userOrgs?: Array<{ id: string; name: string; slug: string; userRole: string }>;
 }
 
+const mainNavItems = [
+  { name: "Dashboard", href: "/dashboard", icon: Sparkles },
+  { name: "Generate", href: "/generate", icon: Mail },
+  { name: "Reply", href: "/reply", icon: Send },
+  { name: "Improve", href: "/improve", icon: Wand2 },
+  { name: "Analyze", href: "/analyze", icon: BarChart3 },
+  { name: "Humanize", href: "/humanize", icon: Bot },
+  { name: "Translate", href: "/translate", icon: Languages },
+  { name: "Templates", href: "/templates", icon: FileText },
+  { name: "History", href: "/history", icon: History },
+  { name: "My Tones", href: "/tones", icon: Sliders },
+];
+
+const orgNavItems = [
+  { name: "Team & Members", href: "/organization", icon: Users },
+  { name: "Shared Templates", href: "/organization/templates", icon: FolderLock },
+  { name: "Brand Voice", href: "/organization/voice", icon: Volume2 },
+  { name: "Analytics", href: "/organization/analytics", icon: BarChart3 },
+];
+
 export function Header({ userOrgs = [] }: HeaderProps) {
   const pathname = usePathname();
   const { data: session } = useSession();
   const [mobileDrawerOpen, setMobileDrawerOpen] = React.useState(false);
+
+  // Close drawer on path change
+  React.useEffect(() => {
+    setMobileDrawerOpen(false);
+  }, [pathname]);
+
+  // Lock body scroll when drawer is open
+  React.useEffect(() => {
+    if (mobileDrawerOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, [mobileDrawerOpen]);
 
   // Derive friendly page title
   const getPageTitle = () => {
@@ -36,7 +93,7 @@ export function Header({ userOrgs = [] }: HeaderProps) {
     if (pathname === "/analyze") return "Email Analysis";
     if (pathname === "/humanize") return "Humanize Email";
     if (pathname === "/translate") return "Email Translation";
-    if (pathname === "/templates") return "Template Library";
+    if (pathname === "/templates") return "Templates";
     if (pathname === "/history") return "Saved History";
     if (pathname === "/tones") return "Custom Tones";
     if (pathname.startsWith("/organization")) return "Organization";
@@ -54,96 +111,207 @@ export function Header({ userOrgs = [] }: HeaderProps) {
     .slice(0, 2);
 
   return (
-    <header className="sticky top-0 z-40 flex h-16 w-full items-center justify-between border-b border-border/80 bg-background/80 px-4 md:px-6 backdrop-blur-md">
-      <div className="flex items-center gap-3">
-        {/* Mobile menu trigger */}
-        <Button
-          variant="ghost"
-          size="iconSm"
-          className="md:hidden"
-          onClick={() => setMobileDrawerOpen(true)}
-          aria-label="Open navigation menu"
-        >
-          <Menu className="h-5 w-5" />
-        </Button>
+    <>
+      <header className="sticky top-0 z-30 flex h-16 w-full items-center justify-between border-b border-border/80 bg-background/80 px-3 sm:px-6 backdrop-blur-md">
+        <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+          {/* Mobile menu trigger */}
+          <Button
+            variant="ghost"
+            size="sm"
+            className="md:hidden h-9 w-9 p-0 rounded-xl"
+            onClick={() => setMobileDrawerOpen(true)}
+            aria-label="Open navigation menu"
+          >
+            <Menu className="h-5 w-5" />
+          </Button>
 
-        {/* Page Title */}
-        <div className="flex items-center gap-2">
-          <h1 className="text-base font-semibold text-foreground tracking-tight sm:text-lg">
-            {getPageTitle()}
-          </h1>
+          {/* Page Title */}
+          <div className="flex items-center gap-2 truncate">
+            <h1 className="text-base sm:text-lg font-semibold text-foreground tracking-tight truncate">
+              {getPageTitle()}
+            </h1>
+          </div>
         </div>
-      </div>
 
-      {/* Right Action Bar */}
-      <div className="flex items-center gap-2.5 sm:gap-3">
-        {/* Daily 10 Generation limit pill */}
-        <UsagePill />
+        {/* Right Action Bar */}
+        <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+          {/* Daily 10 Generation limit pill */}
+          <UsagePill />
 
-        {/* Theme Toggle */}
-        <ThemeToggle />
+          {/* Theme Toggle */}
+          <ThemeToggle />
 
-        {/* User profile dropdown */}
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button
-              variant="ghost"
-              className="relative h-9 w-9 rounded-full bg-primary/10 hover:bg-primary/20 p-0 text-primary font-bold text-xs border border-primary/20"
-            >
-              {session?.user?.image ? (
-                <img
-                  src={session.user.image}
-                  alt={userName}
-                  className="h-full w-full rounded-full object-cover"
-                />
-              ) : (
-                <span>{initials || "U"}</span>
-              )}
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="right" className="w-56">
-            <div className="flex flex-col space-y-1 p-2">
-              <p className="text-sm font-semibold leading-none text-foreground">{userName}</p>
-              <p className="text-xs text-muted-foreground truncate">{userEmail}</p>
+          {/* User profile dropdown */}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="ghost"
+                className="relative h-9 w-9 rounded-full bg-primary/10 hover:bg-primary/20 p-0 text-primary font-bold text-xs border border-primary/20 shrink-0"
+              >
+                {session?.user?.image ? (
+                  <img
+                    src={session.user.image}
+                    alt={userName}
+                    className="h-full w-full rounded-full object-cover"
+                  />
+                ) : (
+                  <span>{initials || "U"}</span>
+                )}
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="right" className="w-56">
+              <div className="flex flex-col space-y-1 p-2">
+                <p className="text-sm font-semibold leading-none text-foreground truncate">{userName}</p>
+                <p className="text-xs text-muted-foreground truncate">{userEmail}</p>
+              </div>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem asChild>
+                <Link href="/dashboard" className="flex items-center gap-2 w-full cursor-pointer">
+                  <Sparkles className="h-4 w-4 text-primary" />
+                  <span>Dashboard</span>
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link href="/organization" className="flex items-center gap-2 w-full cursor-pointer">
+                  <Building2 className="h-4 w-4 text-muted-foreground" />
+                  <span>Organization</span>
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link href="/settings" className="flex items-center gap-2 w-full cursor-pointer">
+                  <Settings className="h-4 w-4 text-muted-foreground" />
+                  <span>Settings</span>
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                destructive
+                onClick={() => signOut({ callbackUrl: "/login" })}
+                className="flex items-center gap-2 text-destructive cursor-pointer"
+              >
+                <LogOut className="h-4 w-4" />
+                <span>Sign Out</span>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+      </header>
+
+      {/* Mobile Slide-Over Drawer with Backdrop */}
+      {mobileDrawerOpen && (
+        <div className="fixed inset-0 z-50 md:hidden flex">
+          {/* Backdrop */}
+          <div
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity"
+            onClick={() => setMobileDrawerOpen(false)}
+          />
+
+          {/* Drawer Panel */}
+          <div className="relative z-50 flex h-full w-[280px] max-w-[85vw] flex-col justify-between border-r border-border bg-card p-4 shadow-2xl animate-in slide-in-from-left duration-200">
+            <div className="flex flex-col gap-5 overflow-y-auto">
+              {/* Drawer Header */}
+              <div className="flex items-center justify-between px-1 pt-1">
+                <Link
+                  href="/dashboard"
+                  onClick={() => setMobileDrawerOpen(false)}
+                  className="flex items-center gap-2.5 font-bold tracking-tight text-foreground"
+                >
+                  <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-tr from-primary to-blue-400 text-white shadow-md shadow-primary/25">
+                    <Mail className="h-5 w-5" />
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="text-base font-bold leading-none">MailPilot</span>
+                    <span className="text-[10px] text-muted-foreground font-medium mt-0.5">Free AI Email Assistant</span>
+                  </div>
+                </Link>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setMobileDrawerOpen(false)}
+                  className="h-8 w-8 p-0 rounded-lg text-muted-foreground hover:text-foreground"
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              </div>
+
+              {/* Navigation links */}
+              <div>
+                <div className="px-2 pb-2 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground/70">
+                  Email Studio
+                </div>
+                <nav className="flex flex-col gap-1">
+                  {mainNavItems.map((item) => {
+                    const isActive = pathname === item.href;
+                    const Icon = item.icon;
+                    return (
+                      <Link
+                        key={item.href}
+                        href={item.href}
+                        onClick={() => setMobileDrawerOpen(false)}
+                        className={cn(
+                          "flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all active:scale-[0.98]",
+                          isActive
+                            ? "bg-primary text-primary-foreground shadow-sm font-semibold"
+                            : "text-muted-foreground hover:bg-muted/80 hover:text-foreground"
+                        )}
+                      >
+                        <Icon className={cn("h-4 w-4 shrink-0", isActive ? "text-primary-foreground" : "text-muted-foreground")} />
+                        <span>{item.name}</span>
+                      </Link>
+                    );
+                  })}
+                </nav>
+              </div>
+
+              {/* Org Nav Links */}
+              <div>
+                <div className="px-2 pb-2 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground/70">
+                  Organization & Team
+                </div>
+                <nav className="flex flex-col gap-1">
+                  {orgNavItems.map((item) => {
+                    const isActive = pathname === item.href;
+                    const Icon = item.icon;
+                    return (
+                      <Link
+                        key={item.href}
+                        href={item.href}
+                        onClick={() => setMobileDrawerOpen(false)}
+                        className={cn(
+                          "flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all active:scale-[0.98]",
+                          isActive
+                            ? "bg-primary text-primary-foreground shadow-sm font-semibold"
+                            : "text-muted-foreground hover:bg-muted/80 hover:text-foreground"
+                        )}
+                      >
+                        <Icon className={cn("h-4 w-4 shrink-0", isActive ? "text-primary-foreground" : "text-muted-foreground")} />
+                        <span>{item.name}</span>
+                      </Link>
+                    );
+                  })}
+                </nav>
+              </div>
             </div>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem asChild>
-              <Link href="/dashboard" className="flex items-center gap-2 w-full">
-                <Sparkles className="h-4 w-4 text-primary" />
-                <span>Dashboard</span>
-              </Link>
-            </DropdownMenuItem>
-            <DropdownMenuItem asChild>
-              <Link href="/organization" className="flex items-center gap-2 w-full">
-                <Building2 className="h-4 w-4 text-muted-foreground" />
-                <span>Organization</span>
-              </Link>
-            </DropdownMenuItem>
-            <DropdownMenuItem asChild>
-              <Link href="/settings" className="flex items-center gap-2 w-full">
-                <Settings className="h-4 w-4 text-muted-foreground" />
+
+            {/* Bottom links */}
+            <div className="pt-3 border-t border-border flex flex-col gap-1">
+              <Link
+                href="/settings"
+                onClick={() => setMobileDrawerOpen(false)}
+                className={cn(
+                  "flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all",
+                  pathname === "/settings"
+                    ? "bg-primary text-primary-foreground font-semibold"
+                    : "text-muted-foreground hover:bg-muted/80 hover:text-foreground"
+                )}
+              >
+                <Settings className="h-4 w-4" />
                 <span>Settings</span>
               </Link>
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem
-              destructive
-              onClick={() => signOut({ callbackUrl: "/login" })}
-              className="flex items-center gap-2 text-destructive cursor-pointer"
-            >
-              <LogOut className="h-4 w-4" />
-              <span>Sign Out</span>
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
-
-      {/* Mobile Drawer */}
-      <Dialog open={mobileDrawerOpen} onOpenChange={setMobileDrawerOpen}>
-        <div className="-m-6 p-2">
-          <AppSidebar userOrgs={userOrgs} onNavigate={() => setMobileDrawerOpen(false)} />
+            </div>
+          </div>
         </div>
-      </Dialog>
-    </header>
+      )}
+    </>
   );
 }

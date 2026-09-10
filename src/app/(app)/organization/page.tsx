@@ -223,13 +223,13 @@ export default function OrganizationPage() {
       ) : (
         <div className="flex flex-col gap-6">
           {/* Org Selector & Nav Tabs */}
-          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border/80 pb-4">
-            <div className="flex items-center gap-3">
-              <span className="text-xs font-semibold text-muted-foreground">Active Organization:</span>
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-border/80 pb-4">
+            <div className="flex items-center gap-2 sm:gap-3 w-full sm:w-auto">
+              <span className="text-xs font-semibold text-muted-foreground shrink-0">Org:</span>
               <select
                 value={selectedOrg?.id || ""}
                 onChange={(e) => fetchOrgDetails(e.target.value)}
-                className="h-10 rounded-xl border border-input bg-card px-3.5 text-sm font-bold text-foreground shadow-sm"
+                className="h-10 w-full sm:w-auto rounded-xl border border-input bg-card px-3.5 text-sm font-bold text-foreground shadow-sm"
               >
                 {orgs.map((org) => (
                   <option key={org.id} value={org.id}>
@@ -240,21 +240,21 @@ export default function OrganizationPage() {
             </div>
 
             {/* Quick Links inside Organization */}
-            <div className="flex items-center gap-2">
-              <Link href="/organization/templates">
-                <Button variant="outline" size="sm" className="gap-1.5 rounded-xl text-xs">
+            <div className="flex items-center gap-1.5 sm:gap-2 overflow-x-auto pb-1 sm:pb-0 scrollbar-none w-full sm:w-auto">
+              <Link href="/organization/templates" className="shrink-0">
+                <Button variant="outline" size="sm" className="gap-1.5 rounded-xl text-xs whitespace-nowrap">
                   <FolderLock className="h-3.5 w-3.5 text-blue-500" />
                   <span>Shared Templates</span>
                 </Button>
               </Link>
-              <Link href="/organization/voice">
-                <Button variant="outline" size="sm" className="gap-1.5 rounded-xl text-xs">
+              <Link href="/organization/voice" className="shrink-0">
+                <Button variant="outline" size="sm" className="gap-1.5 rounded-xl text-xs whitespace-nowrap">
                   <Volume2 className="h-3.5 w-3.5 text-purple-500" />
                   <span>Brand Voice</span>
                 </Button>
               </Link>
-              <Link href="/organization/analytics">
-                <Button variant="outline" size="sm" className="gap-1.5 rounded-xl text-xs">
+              <Link href="/organization/analytics" className="shrink-0">
+                <Button variant="outline" size="sm" className="gap-1.5 rounded-xl text-xs whitespace-nowrap">
                   <BarChart3 className="h-3.5 w-3.5 text-emerald-500" />
                   <span>Analytics</span>
                 </Button>
