@@ -101,17 +101,17 @@ export function OutputActions({
 
   return (
     <>
-      <div className="flex flex-wrap items-center justify-between gap-2 border-t border-border/80 bg-muted/20 px-4 py-3 rounded-b-2xl">
+      <div className="flex flex-wrap items-center justify-between gap-2 border-t border-border bg-secondary/30 px-4 py-2.5 rounded-b-xl">
         <div className="flex items-center gap-1.5 flex-wrap">
           {/* Copy Button */}
           <Button
             size="sm"
             variant="default"
             onClick={handleCopy}
-            className="gap-1.5 rounded-xl font-semibold shadow-sm"
+            className="gap-1.5 rounded-lg text-xs font-medium h-8"
           >
-            {copied ? <Check className="h-4 w-4 text-white" /> : <Copy className="h-4 w-4" />}
-            <span>{copied ? "Copied!" : "Copy Email"}</span>
+            {copied ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}
+            <span>{copied ? "Copied" : "Copy"}</span>
           </Button>
 
           {/* Edit Toggle */}
@@ -120,10 +120,10 @@ export function OutputActions({
               size="sm"
               variant={isEditing ? "secondary" : "outline"}
               onClick={onEditToggle}
-              className="gap-1.5 rounded-xl"
+              className="gap-1.5 rounded-lg text-xs font-medium h-8"
             >
-              <Edit3 className="h-4 w-4" />
-              <span>{isEditing ? "Done Editing" : "Edit"}</span>
+              <Edit3 className="h-3.5 w-3.5" />
+              <span>{isEditing ? "Done" : "Edit"}</span>
             </Button>
           )}
 
@@ -135,15 +135,14 @@ export function OutputActions({
               setSaveTitle(subject || "My Generated Email");
               setSaveModalOpen(true);
             }}
-            className="gap-1.5 rounded-xl"
+            className="gap-1.5 rounded-lg text-xs font-medium h-8"
           >
-            <BookmarkPlus className="h-4 w-4" />
-            <span className="hidden sm:inline">Save to History</span>
-            <span className="sm:hidden">Save</span>
+            <BookmarkPlus className="h-3.5 w-3.5" />
+            <span className="hidden sm:inline">Save</span>
           </Button>
         </div>
 
-        <div className="flex items-center gap-1.5">
+        <div className="flex items-center gap-1">
           {/* Regenerate */}
           {onRegenerate && (
             <Button
@@ -151,9 +150,9 @@ export function OutputActions({
               variant="ghost"
               onClick={onRegenerate}
               title="Regenerate email"
-              className="gap-1.5 rounded-xl text-muted-foreground hover:text-foreground"
+              className="gap-1.5 rounded-lg text-xs font-medium h-8 text-muted-foreground hover:text-foreground"
             >
-              <RotateCcw className="h-4 w-4" />
+              <RotateCcw className="h-3.5 w-3.5" />
               <span className="hidden md:inline">Regenerate</span>
             </Button>
           )}
@@ -161,22 +160,22 @@ export function OutputActions({
           {/* Download Dropdown */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button size="sm" variant="ghost" className="gap-1.5 rounded-xl text-muted-foreground hover:text-foreground">
-                <Download className="h-4 w-4" />
-                <span className="hidden md:inline">Download</span>
+              <Button size="sm" variant="ghost" className="gap-1.5 rounded-lg text-xs font-medium h-8 text-muted-foreground hover:text-foreground">
+                <Download className="h-3.5 w-3.5" />
+                <span className="hidden md:inline">Export</span>
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="right" className="w-48">
               <DropdownMenuItem onClick={() => exportAsEml(subject, body)}>
-                <Mail className="h-4 w-4 text-blue-500" />
+                <Mail className="h-3.5 w-3.5 text-muted-foreground" />
                 <span>Outlook / Apple Mail (.eml)</span>
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => exportAsTxt(subject, body)}>
-                <FileText className="h-4 w-4 text-slate-500" />
+                <FileText className="h-3.5 w-3.5 text-muted-foreground" />
                 <span>Plain Text (.txt)</span>
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => exportAsMarkdown(subject, body)}>
-                <FileCode className="h-4 w-4 text-purple-500" />
+                <FileCode className="h-3.5 w-3.5 text-muted-foreground" />
                 <span>Markdown (.md)</span>
               </DropdownMenuItem>
             </DropdownMenuContent>
@@ -189,9 +188,9 @@ export function OutputActions({
               variant="ghost"
               onClick={onClear}
               title="Delete output"
-              className="h-8 w-8 p-0 rounded-xl text-muted-foreground hover:text-destructive hover:bg-destructive/10"
+              className="h-8 w-8 p-0 rounded-lg text-muted-foreground hover:text-destructive hover:bg-destructive/10"
             >
-              <Trash2 className="h-4 w-4" />
+              <Trash2 className="h-3.5 w-3.5" />
             </Button>
           )}
         </div>

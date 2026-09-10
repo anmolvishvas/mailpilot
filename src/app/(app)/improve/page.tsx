@@ -75,39 +75,32 @@ export default function ImprovePage() {
   ];
 
   return (
-    <div className="flex flex-col gap-6 max-w-5xl mx-auto pb-12">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-amber-500/10 text-amber-500">
-            <Wand2 className="h-5 w-5" />
-          </div>
-          <div>
-            <h2 className="text-2xl font-bold tracking-tight text-foreground">Improve Email</h2>
-            <p className="text-xs text-muted-foreground">Transform rough drafts into clear, articulate, professional communication.</p>
-          </div>
-        </div>
+    <div className="flex flex-col gap-6 max-w-4xl pb-10">
+      <div>
+        <h2 className="text-xl sm:text-2xl font-semibold tracking-tight text-foreground">Improve Email</h2>
+        <p className="text-xs text-muted-foreground mt-0.5">Transform rough drafts into clear, articulate, and professional communication.</p>
       </div>
 
-      <Card className="rounded-3xl border-border/80 shadow-xl overflow-hidden bg-card/95">
-        <CardContent className="p-6 sm:p-8 flex flex-col gap-6">
-          <div className="flex flex-col gap-2">
-            <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
-              Paste your email draft
+      <Card className="rounded-xl border border-border bg-card shadow-sm overflow-hidden">
+        <CardContent className="p-5 flex flex-col gap-4">
+          <div className="flex flex-col gap-1.5">
+            <label className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
+              Draft to Improve
             </label>
             <Textarea
               value={inputEmail}
               onChange={(e) => setInputEmail(e.target.value)}
               placeholder="e.g. 'hi sir i am waiting for payment from long time please pay fast'"
-              className="min-h-[140px] text-sm p-4 rounded-2xl bg-muted/30 focus:bg-background border-border"
+              className="min-h-[120px] text-sm p-3 rounded-lg bg-background border border-input focus:border-ring"
             />
           </div>
 
           {/* Tone Presets */}
-          <div className="flex flex-col gap-2">
-            <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+          <div className="flex flex-col gap-1.5">
+            <label className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
               Enhancement Style
             </label>
-            <div className="grid grid-cols-2 sm:grid-cols-5 gap-2.5">
+            <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
               {tones.map((t) => {
                 const isSelected = desiredTone === t.id;
                 return (
@@ -115,34 +108,34 @@ export default function ImprovePage() {
                     key={t.id}
                     type="button"
                     onClick={() => setDesiredTone(t.id as any)}
-                    className={`flex flex-col items-center justify-center p-3 rounded-2xl border text-center transition-all ${
+                    className={`flex items-center justify-center p-2 rounded-lg border text-center text-xs transition-colors ${
                       isSelected
-                        ? "border-amber-500 bg-amber-500/10 text-amber-600 dark:text-amber-400 font-bold shadow-sm"
-                        : "border-border bg-card text-muted-foreground hover:bg-muted"
+                        ? "border-foreground bg-foreground text-background font-semibold"
+                        : "border-border bg-card text-muted-foreground hover:bg-secondary hover:text-foreground"
                     }`}
                   >
-                    <span className="text-xs">{t.label}</span>
+                    <span>{t.label}</span>
                   </button>
                 );
               })}
             </div>
           </div>
 
-          <div className="flex justify-end pt-2">
+          <div className="flex justify-end pt-1">
             <Button
-              size="lg"
+              size="sm"
               onClick={() => handleImprove()}
               disabled={loading || !inputEmail.trim()}
-              className="gap-2 rounded-2xl px-8 font-bold shadow-lg shadow-amber-500/25 bg-amber-500 hover:bg-amber-600 text-white"
+              className="h-8 px-4 gap-1.5 rounded-lg text-xs font-medium"
             >
-              <Wand2 className="h-4 w-4" />
+              <Wand2 className="h-3.5 w-3.5" />
               <span>{loading ? "Polishing email..." : "Improve Email"}</span>
             </Button>
           </div>
         </CardContent>
 
         {output && (
-          <div className="border-t border-border bg-card p-6 sm:p-8 flex flex-col gap-6">
+          <div className="border-t border-border bg-card p-5 flex flex-col gap-4">
             <DiffViewer
               original={output.original}
               improved={editableBody || output.improved}

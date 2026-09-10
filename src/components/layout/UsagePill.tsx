@@ -50,9 +50,9 @@ export function UsagePill({ initialUsage, className }: UsagePillProps) {
 
   if (loading || !usage) {
     return (
-      <div className={cn("inline-flex items-center gap-2 rounded-full border border-border/60 bg-muted/40 px-3 py-1 text-xs text-muted-foreground animate-pulse", className)}>
-        <Sparkles className="h-3.5 w-3.5 text-primary" />
-        <span>Loading daily limit...</span>
+      <div className={cn("inline-flex items-center gap-1.5 rounded-md border border-border bg-secondary/50 px-2.5 py-1 text-xs text-muted-foreground", className)}>
+        <Sparkles className="h-3 w-3 text-muted-foreground" />
+        <span>Loading...</span>
       </div>
     );
   }
@@ -64,32 +64,28 @@ export function UsagePill({ initialUsage, className }: UsagePillProps) {
     <div
       title={
         isExhausted
-          ? "You've used all 10 AI generations for today. Your limit will reset tomorrow."
-          : `${usage.remainingToday} of ${usage.dailyLimit} free generations remaining today`
+          ? "Daily limit reached (10/10). Resets tomorrow."
+          : `${usage.remainingToday} of ${usage.dailyLimit} generations remaining today`
       }
       className={cn(
-        "inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs font-medium transition-all shadow-sm",
+        "inline-flex items-center gap-1.5 rounded-md border px-2.5 py-1 text-xs font-medium transition-colors",
         isExhausted
-          ? "border-rose-500/40 bg-rose-500/10 text-rose-600 dark:text-rose-400"
+          ? "border-destructive/30 bg-destructive/10 text-destructive"
           : isLow
-          ? "border-amber-500/40 bg-amber-500/10 text-amber-600 dark:text-amber-400"
-          : "border-primary/30 bg-primary/10 text-primary dark:text-blue-400",
+          ? "border-amber-500/30 bg-amber-500/10 text-amber-600 dark:text-amber-400"
+          : "border-border bg-secondary text-foreground",
         className
       )}
     >
-      {isExhausted ? (
-        <AlertCircle className="h-3.5 w-3.5 text-rose-500 shrink-0" />
-      ) : (
-        <Sparkles className="h-3.5 w-3.5 text-primary shrink-0" />
-      )}
-      <span className="font-semibold">
-        {usage.remainingToday} / {usage.dailyLimit}
+      <span className={cn(
+        "h-1.5 w-1.5 rounded-full",
+        isExhausted ? "bg-destructive" : isLow ? "bg-amber-500" : "bg-emerald-500"
+      )} />
+      <span>
+        {usage.remainingToday}/{usage.dailyLimit}
       </span>
-      <span className="hidden sm:inline text-muted-foreground font-normal">
-        {isExhausted ? "used today (resets tomorrow)" : "generations remaining today"}
-      </span>
-      <span className="sm:hidden text-muted-foreground font-normal">
-        left
+      <span className="hidden sm:inline text-muted-foreground font-normal text-[11px]">
+        left today
       </span>
     </div>
   );

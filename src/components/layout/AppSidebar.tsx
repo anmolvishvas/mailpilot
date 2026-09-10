@@ -15,16 +15,11 @@ import {
   History,
   Sliders,
   Users,
-  Building2,
   FolderLock,
   Volume2,
   Settings,
-  Flame,
-  ChevronRight,
-  ShieldCheck,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Badge } from "@/components/ui/badge";
 
 interface AppSidebarProps {
   userOrgs?: Array<{ id: string; name: string; slug: string; userRole: string }>;
@@ -48,7 +43,7 @@ const mainNavItems = [
 const orgNavItems = [
   { name: "Team & Members", href: "/organization", icon: Users },
   { name: "Shared Templates", href: "/organization/templates", icon: FolderLock },
-  { name: "Brand Voice & Tone", href: "/organization/voice", icon: Volume2 },
+  { name: "Brand Voice", href: "/organization/voice", icon: Volume2 },
   { name: "Analytics", href: "/organization/analytics", icon: BarChart3 },
 ];
 
@@ -59,39 +54,36 @@ export function AppSidebar({ userOrgs = [], className, onNavigate }: AppSidebarP
   return (
     <aside
       className={cn(
-        "flex h-full w-64 flex-col justify-between border-r border-border/80 bg-card/60 backdrop-blur-md p-4 transition-all",
+        "flex h-full w-60 flex-col justify-between border-r border-border bg-card p-3 transition-all",
         className
       )}
     >
-      <div className="flex flex-col gap-6">
+      <div className="flex flex-col gap-5">
         {/* Brand Header */}
-        <div className="flex items-center justify-between px-2 pt-1">
+        <div className="flex items-center justify-between px-2 pt-1.5 pb-1">
           <Link
             href="/dashboard"
             onClick={onNavigate}
-            className="flex items-center gap-2.5 font-bold tracking-tight text-foreground transition-opacity hover:opacity-90"
+            className="flex items-center gap-2.5 font-semibold text-foreground transition-opacity hover:opacity-80"
           >
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-tr from-primary to-blue-400 text-white shadow-md shadow-primary/25">
-              <Mail className="h-5 w-5" />
+            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-foreground text-background">
+              <Mail className="h-4 w-4" />
             </div>
-            <div className="flex flex-col">
-              <span className="text-base leading-none font-bold">MailPilot</span>
-              <span className="text-[10px] text-muted-foreground font-medium mt-0.5">Free AI Email Assistant</span>
-            </div>
+            <span className="text-sm font-semibold tracking-tight">MailPilot</span>
           </Link>
-          <Badge variant="success" className="text-[10px] px-2 py-0">
-            100% Free
-          </Badge>
+          <span className="text-[10px] text-muted-foreground font-mono bg-muted px-1.5 py-0.5 rounded">
+            v1.0
+          </span>
         </div>
 
         {/* Navigation list */}
-        <div className="flex flex-col gap-5 overflow-y-auto pr-1">
+        <div className="flex flex-col gap-4 overflow-y-auto pr-0.5">
           {/* Main Features */}
           <div>
-            <div className="px-2 pb-2 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground/70">
-              Email Studio
+            <div className="px-2 pb-1.5 text-[10px] font-medium uppercase tracking-wider text-muted-foreground/70">
+              Studio
             </div>
-            <nav className="flex flex-col gap-1">
+            <nav className="flex flex-col gap-0.5">
               {mainNavItems.map((item) => {
                 const isActive = pathname === item.href;
                 const Icon = item.icon;
@@ -101,13 +93,13 @@ export function AppSidebar({ userOrgs = [], className, onNavigate }: AppSidebarP
                     href={item.href}
                     onClick={onNavigate}
                     className={cn(
-                      "flex items-center gap-3 rounded-xl px-3 py-2 text-sm font-medium transition-all",
+                      "flex items-center gap-2.5 rounded-lg px-2.5 py-1.5 text-xs font-medium transition-colors",
                       isActive
-                        ? "bg-primary text-primary-foreground shadow-sm shadow-primary/20 font-semibold"
-                        : "text-muted-foreground hover:bg-muted/80 hover:text-foreground"
+                        ? "bg-secondary text-foreground font-semibold"
+                        : "text-muted-foreground hover:bg-muted/60 hover:text-foreground"
                     )}
                   >
-                    <Icon className={cn("h-4 w-4 shrink-0", isActive ? "text-primary-foreground" : "text-muted-foreground")} />
+                    <Icon className={cn("h-3.5 w-3.5 shrink-0", isActive ? "text-foreground" : "text-muted-foreground")} />
                     <span>{item.name}</span>
                   </Link>
                 );
@@ -115,17 +107,17 @@ export function AppSidebar({ userOrgs = [], className, onNavigate }: AppSidebarP
             </nav>
           </div>
 
-          {/* Organization section - only shown when user belongs to an org or is creating one */}
+          {/* Organization section */}
           <div>
-            <div className="flex items-center justify-between px-2 pb-2 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground/70">
+            <div className="flex items-center justify-between px-2 pb-1.5 text-[10px] font-medium uppercase tracking-wider text-muted-foreground/70">
               <span>Organization</span>
               {hasOrg && (
-                <span className="text-[10px] lowercase text-emerald-600 dark:text-emerald-400 font-normal">
-                  {userOrgs[0].name.slice(0, 12)}
+                <span className="text-[10px] text-muted-foreground truncate max-w-[80px]">
+                  {userOrgs[0].name}
                 </span>
               )}
             </div>
-            <nav className="flex flex-col gap-1">
+            <nav className="flex flex-col gap-0.5">
               {orgNavItems.map((item) => {
                 const isActive = pathname === item.href;
                 const Icon = item.icon;
@@ -135,13 +127,13 @@ export function AppSidebar({ userOrgs = [], className, onNavigate }: AppSidebarP
                     href={item.href}
                     onClick={onNavigate}
                     className={cn(
-                      "flex items-center gap-3 rounded-xl px-3 py-2 text-sm font-medium transition-all",
+                      "flex items-center gap-2.5 rounded-lg px-2.5 py-1.5 text-xs font-medium transition-colors",
                       isActive
-                        ? "bg-primary text-primary-foreground shadow-sm font-semibold"
-                        : "text-muted-foreground hover:bg-muted/80 hover:text-foreground"
+                        ? "bg-secondary text-foreground font-semibold"
+                        : "text-muted-foreground hover:bg-muted/60 hover:text-foreground"
                     )}
                   >
-                    <Icon className={cn("h-4 w-4 shrink-0", isActive ? "text-primary-foreground" : "text-muted-foreground")} />
+                    <Icon className={cn("h-3.5 w-3.5 shrink-0", isActive ? "text-foreground" : "text-muted-foreground")} />
                     <span>{item.name}</span>
                   </Link>
                 );
@@ -152,18 +144,18 @@ export function AppSidebar({ userOrgs = [], className, onNavigate }: AppSidebarP
       </div>
 
       {/* Footer Navigation */}
-      <div className="pt-4 border-t border-border/60 flex flex-col gap-1">
+      <div className="pt-2 border-t border-border flex flex-col gap-0.5">
         <Link
           href="/settings"
           onClick={onNavigate}
           className={cn(
-            "flex items-center gap-3 rounded-xl px-3 py-2 text-sm font-medium transition-all",
+            "flex items-center gap-2.5 rounded-lg px-2.5 py-1.5 text-xs font-medium transition-colors",
             pathname === "/settings"
-              ? "bg-primary text-primary-foreground font-semibold"
-              : "text-muted-foreground hover:bg-muted/80 hover:text-foreground"
+              ? "bg-secondary text-foreground font-semibold"
+              : "text-muted-foreground hover:bg-muted/60 hover:text-foreground"
           )}
         >
-          <Settings className="h-4 w-4" />
+          <Settings className="h-3.5 w-3.5" />
           <span>Settings</span>
         </Link>
       </div>

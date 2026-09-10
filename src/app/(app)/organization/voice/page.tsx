@@ -135,52 +135,52 @@ export default function BrandVoicePage() {
   return (
     <div className="flex flex-col gap-6 max-w-5xl mx-auto pb-16">
       {/* Header */}
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-3 border-b border-border pb-5">
         <Link href="/organization">
-          <Button variant="ghost" size="iconSm" className="rounded-xl">
+          <Button variant="ghost" size="iconSm" className="rounded-lg h-8 w-8">
             <ArrowLeft className="h-4 w-4" />
           </Button>
         </Link>
-        <div className="flex items-center gap-2">
-          <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-purple-500/10 text-purple-600 dark:text-purple-400">
-            <Volume2 className="h-5 w-5" />
+        <div className="flex items-center gap-3">
+          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-secondary text-foreground">
+            <Volume2 className="h-4 w-4" />
           </div>
           <div>
-            <h2 className="text-2xl font-bold tracking-tight text-foreground">Brand Voice & Company Tone</h2>
+            <h1 className="text-xl font-semibold tracking-tight text-foreground">Brand Voice & Company Tone</h1>
             <p className="text-xs text-muted-foreground">Standardize writing tone and vocabulary across all organization emails.</p>
           </div>
         </div>
       </div>
 
       {loading ? (
-        <div className="h-64 rounded-3xl border border-border bg-card/60 animate-pulse" />
+        <div className="h-64 rounded-xl border border-border bg-card/60 animate-pulse" />
       ) : !selectedOrg ? (
-        <Card className="rounded-3xl border border-border p-12 text-center">
-          <p className="text-sm text-muted-foreground">Please create or select an organization first.</p>
+        <Card className="rounded-xl border border-border p-12 text-center">
+          <p className="text-xs text-muted-foreground">Please create or select an organization first.</p>
         </Card>
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Section 1: Company Tone */}
-          <Card className="rounded-3xl border border-border bg-card shadow-sm">
+          <Card className="rounded-xl border border-border bg-card">
             <form onSubmit={handleSaveCompanyTone}>
-              <CardHeader className="p-6 pb-4">
+              <CardHeader className="p-5 pb-4 border-b border-border">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <Volume2 className="h-5 w-5 text-primary" />
-                    <CardTitle className="text-lg font-bold">Company Writing Tone</CardTitle>
+                    <Volume2 className="h-4 w-4 text-muted-foreground" />
+                    <CardTitle className="text-sm font-semibold">Company Writing Tone</CardTitle>
                   </div>
-                  <Badge variant="success" className="text-[10px]">
+                  <Badge variant="secondary" className="text-[10px] uppercase font-semibold">
                     Active
                   </Badge>
                 </div>
-                <CardDescription className="text-xs text-muted-foreground">
+                <CardDescription className="text-xs text-muted-foreground mt-0.5">
                   The overarching tone of voice incorporated when members generate emails for {selectedOrg.name}.
                 </CardDescription>
               </CardHeader>
 
-              <CardContent className="p-6 pt-0 space-y-4">
+              <CardContent className="p-5 space-y-4">
                 <div className="space-y-1.5">
-                  <label className="text-xs font-semibold text-foreground">Tone Description</label>
+                  <label className="text-xs font-medium text-foreground">Tone Description</label>
                   <Textarea
                     value={companyToneDesc}
                     onChange={(e) => setCompanyToneDesc(e.target.value)}
@@ -192,7 +192,7 @@ export default function BrandVoicePage() {
                 </div>
 
                 <div className="space-y-1.5">
-                  <label className="text-xs font-semibold text-foreground">Special Rules / Signing Off</label>
+                  <label className="text-xs font-medium text-foreground">Special Rules / Signing Off</label>
                   <Input
                     value={companyToneRules}
                     onChange={(e) => setCompanyToneRules(e.target.value)}
@@ -203,8 +203,8 @@ export default function BrandVoicePage() {
 
                 {canManage && (
                   <div className="flex justify-end pt-2">
-                    <Button type="submit" disabled={savingTone} className="gap-2 rounded-xl font-bold">
-                      <Save className="h-4 w-4" />
+                    <Button type="submit" disabled={savingTone} className="gap-2 rounded-lg font-medium text-xs h-9">
+                      <Save className="h-3.5 w-3.5" />
                       <span>{savingTone ? "Saving..." : "Save Company Tone"}</span>
                     </Button>
                   </div>
@@ -214,26 +214,26 @@ export default function BrandVoicePage() {
           </Card>
 
           {/* Section 2: Brand Voice Preferences */}
-          <Card className="rounded-3xl border border-border bg-card shadow-sm">
+          <Card className="rounded-xl border border-border bg-card">
             <form onSubmit={handleSaveBrandVoice}>
-              <CardHeader className="p-6 pb-4">
+              <CardHeader className="p-5 pb-4 border-b border-border">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <Sparkles className="h-5 w-5 text-purple-500" />
-                    <CardTitle className="text-lg font-bold">Brand Voice Guidelines</CardTitle>
+                    <Sparkles className="h-4 w-4 text-muted-foreground" />
+                    <CardTitle className="text-sm font-semibold">Brand Voice Guidelines</CardTitle>
                   </div>
-                  <Badge variant="purple" className="text-[10px]">
+                  <Badge variant="secondary" className="text-[10px] uppercase font-semibold">
                     Vocabulary
                   </Badge>
                 </div>
-                <CardDescription className="text-xs text-muted-foreground">
+                <CardDescription className="text-xs text-muted-foreground mt-0.5">
                   Configure brand personality traits, preferred vocabulary, and phrases to avoid.
                 </CardDescription>
               </CardHeader>
 
-              <CardContent className="p-6 pt-0 space-y-4">
+              <CardContent className="p-5 space-y-4">
                 <div className="space-y-1.5">
-                  <label className="text-xs font-semibold text-foreground">Brand Personality</label>
+                  <label className="text-xs font-medium text-foreground">Brand Personality</label>
                   <Input
                     value={personality}
                     onChange={(e) => setPersonality(e.target.value)}
@@ -244,7 +244,7 @@ export default function BrandVoicePage() {
                 </div>
 
                 <div className="space-y-1.5">
-                  <label className="text-xs font-semibold text-foreground">Words to Use</label>
+                  <label className="text-xs font-medium text-foreground">Words to Use</label>
                   <Input
                     value={wordsToUse}
                     onChange={(e) => setWordsToUse(e.target.value)}
@@ -255,7 +255,7 @@ export default function BrandVoicePage() {
                 </div>
 
                 <div className="space-y-1.5">
-                  <label className="text-xs font-semibold text-foreground">Words to Avoid</label>
+                  <label className="text-xs font-medium text-foreground">Words to Avoid</label>
                   <Input
                     value={wordsToAvoid}
                     onChange={(e) => setWordsToAvoid(e.target.value)}
@@ -267,8 +267,8 @@ export default function BrandVoicePage() {
 
                 {canManage && (
                   <div className="flex justify-end pt-2">
-                    <Button type="submit" disabled={savingVoice} className="gap-2 rounded-xl font-bold bg-purple-600 hover:bg-purple-700 text-white">
-                      <Save className="h-4 w-4" />
+                    <Button type="submit" disabled={savingVoice} className="gap-2 rounded-lg font-medium text-xs h-9">
+                      <Save className="h-3.5 w-3.5" />
                       <span>{savingVoice ? "Saving..." : "Save Brand Voice"}</span>
                     </Button>
                   </div>

@@ -64,17 +64,17 @@ export default function RegisterPage() {
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4 py-12">
-      <div className="w-full max-w-md space-y-6 rounded-3xl border border-border bg-card p-8 shadow-2xl">
+      <div className="w-full max-w-sm space-y-6 rounded-xl border border-border bg-card p-6 sm:p-8 shadow-sm">
         {/* Logo & Header */}
         <div className="text-center space-y-2">
-          <Link href="/" className="inline-flex items-center gap-2 font-bold tracking-tight">
-            <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-tr from-primary to-blue-400 text-white shadow-md shadow-primary/25">
-              <Mail className="h-6 w-6" />
+          <Link href="/" className="inline-flex items-center gap-2.5 font-bold tracking-tight">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
+              <Mail className="h-4 w-4" />
             </div>
-            <span className="text-xl font-bold">MailPilot</span>
+            <span className="text-lg font-semibold tracking-tight">MailPilot</span>
           </Link>
-          <h2 className="text-2xl font-bold tracking-tight text-foreground">
-            Create your free account
+          <h2 className="text-xl font-semibold tracking-tight text-foreground">
+            Create your account
           </h2>
           <p className="text-xs text-muted-foreground">
             10 free AI generations every day. No credit card required.
@@ -82,17 +82,17 @@ export default function RegisterPage() {
         </div>
 
         {/* Free Plan Badge */}
-        <div className="flex items-center gap-2.5 rounded-2xl border border-emerald-500/30 bg-emerald-500/10 p-3 text-xs text-emerald-700 dark:text-emerald-300">
-          <ShieldCheck className="h-5 w-5 text-emerald-500 shrink-0" />
+        <div className="flex items-center gap-2.5 rounded-lg border border-border bg-secondary/30 p-3 text-xs text-muted-foreground">
+          <ShieldCheck className="h-4 w-4 text-muted-foreground shrink-0" />
           <span>
-            <strong>100% Free Forever.</strong> No subscriptions, no hidden trials, and no feature paywalls.
+            <strong className="text-foreground font-medium">100% Free Forever.</strong> No subscriptions, no hidden trials, and no feature paywalls.
           </span>
         </div>
 
         {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-1.5">
-            <label className="text-xs font-semibold text-foreground">Full Name</label>
+            <label className="text-xs font-medium text-foreground">Full Name</label>
             <Input
               type="text"
               placeholder="Alex Morgan"
@@ -103,7 +103,7 @@ export default function RegisterPage() {
           </div>
 
           <div className="space-y-1.5">
-            <label className="text-xs font-semibold text-foreground">Email Address</label>
+            <label className="text-xs font-medium text-foreground">Email Address</label>
             <Input
               type="email"
               placeholder="alex@example.com"
@@ -114,7 +114,7 @@ export default function RegisterPage() {
           </div>
 
           <div className="space-y-1.5">
-            <label className="text-xs font-semibold text-foreground">Password</label>
+            <label className="text-xs font-medium text-foreground">Password</label>
             <Input
               type="password"
               placeholder="At least 6 characters"
@@ -125,15 +125,15 @@ export default function RegisterPage() {
             />
           </div>
 
-          <Button type="submit" disabled={loading} className="w-full rounded-xl font-bold shadow-md shadow-primary/20">
-            {loading ? "Creating Account..." : "Create Free Account"}
+          <Button type="submit" disabled={loading} className="w-full rounded-lg font-medium text-xs h-9">
+            {loading ? "Creating Account..." : "Create Account"}
           </Button>
         </form>
 
         {/* Sign In Link */}
         <div className="text-center text-xs text-muted-foreground">
           Already have an account?{" "}
-          <Link href="/login" className="font-semibold text-primary hover:underline">
+          <Link href="/login" className="font-medium text-foreground hover:underline">
             Sign In
           </Link>
         </div>

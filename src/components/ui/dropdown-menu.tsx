@@ -88,7 +88,7 @@ export function DropdownMenuContent({
   return (
     <div
       className={cn(
-        "absolute z-50 mt-2 min-w-[12rem] overflow-hidden rounded-xl border border-border bg-popover p-1.5 text-popover-foreground shadow-xl animate-in fade-in-80 zoom-in-95",
+        "absolute z-50 mt-1.5 min-w-[10rem] overflow-hidden rounded-lg border border-border bg-popover p-1 text-popover-foreground shadow-md animate-in fade-in-80 zoom-in-95",
         align === "right" ? "right-0" : "left-0",
         className
       )}
@@ -116,7 +116,7 @@ export function DropdownMenuItem({
   const { setOpen } = React.useContext(DropdownContext);
 
   const baseClassName = cn(
-    "relative flex w-full cursor-pointer select-none items-center gap-2 rounded-lg px-3 py-2 text-sm outline-none transition-colors hover:bg-accent hover:text-accent-foreground text-left",
+    "relative flex w-full cursor-pointer select-none items-center gap-2 rounded-md px-2.5 py-1.5 text-xs outline-none transition-colors hover:bg-secondary hover:text-foreground text-left",
     destructive && "text-destructive hover:bg-destructive/10 hover:text-destructive",
     disabled && "pointer-events-none opacity-50",
     className

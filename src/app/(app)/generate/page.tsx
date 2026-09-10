@@ -111,30 +111,23 @@ export default function GeneratePage() {
   };
 
   return (
-    <div className="flex flex-col gap-6 max-w-4xl mx-auto pb-12">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-primary/10 text-primary">
-            <Mail className="h-5 w-5" />
-          </div>
-          <div>
-            <h2 className="text-2xl font-bold tracking-tight text-foreground">AI Email Generator</h2>
-            <p className="text-xs text-muted-foreground">Describe your intent and MailPilot will write the complete email.</p>
-          </div>
-        </div>
+    <div className="flex flex-col gap-6 max-w-4xl pb-10">
+      <div>
+        <h2 className="text-xl sm:text-2xl font-semibold tracking-tight text-foreground">Email Generator</h2>
+        <p className="text-xs text-muted-foreground mt-0.5">Enter key points or thoughts to compose a complete email.</p>
       </div>
 
-      <Card className="rounded-3xl border-border/80 shadow-xl overflow-hidden bg-card/95">
-        <CardContent className="p-6 sm:p-8 flex flex-col gap-6">
-          <div className="flex flex-col gap-2">
-            <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+      <Card className="rounded-xl border border-border bg-card shadow-sm overflow-hidden">
+        <CardContent className="p-5 flex flex-col gap-4">
+          <div className="flex flex-col gap-1.5">
+            <label className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
               What do you want to say?
             </label>
             <Textarea
               value={prompt}
               onChange={(e) => setPrompt(e.target.value)}
               placeholder="e.g. Schedule a 30 min sync with the marketing team on Thursday to review our Q4 campaign results"
-              className="min-h-[140px] text-base p-4 rounded-2xl bg-muted/30 focus:bg-background border-border"
+              className="min-h-[120px] text-sm p-3 rounded-lg bg-background border border-input focus:border-ring"
             />
           </div>
 
@@ -151,28 +144,28 @@ export default function GeneratePage() {
             setUseOrgTone={setUseOrgTone}
           />
 
-          <div className="flex items-center justify-end pt-2">
+          <div className="flex items-center justify-end pt-1">
             <Button
-              size="lg"
+              size="sm"
               onClick={() => handleGenerate()}
               disabled={loading || !prompt.trim()}
-              className="gap-2 rounded-2xl px-8 font-bold shadow-lg shadow-primary/25"
+              className="h-8 px-4 gap-1.5 rounded-lg text-xs font-medium"
             >
-              <Sparkles className="h-4 w-4" />
-              <span>{loading ? "Writing your email..." : "Generate Email"}</span>
+              <Sparkles className="h-3.5 w-3.5" />
+              <span>{loading ? "Writing email..." : "Generate Email"}</span>
             </Button>
           </div>
         </CardContent>
 
         {output && (
           <div className="border-t border-border bg-card">
-            <div className="p-6 sm:p-8 flex flex-col gap-4">
-              <div className="flex items-center justify-between border-b border-border/60 pb-3">
-                <div className="flex flex-col gap-1">
-                  <span className="text-xs font-bold uppercase tracking-wider text-primary">Subject</span>
-                  <span className="text-sm font-bold text-foreground">{output.subject}</span>
+            <div className="p-5 flex flex-col gap-3">
+              <div className="flex items-center justify-between border-b border-border pb-2.5">
+                <div className="flex flex-col gap-0.5">
+                  <span className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">Subject</span>
+                  <span className="text-sm font-semibold text-foreground">{output.subject}</span>
                 </div>
-                <Badge variant="outline" className="capitalize text-xs">
+                <Badge variant="outline" className="capitalize text-[11px] font-medium">
                   {output.tone}
                 </Badge>
               </div>
@@ -181,10 +174,10 @@ export default function GeneratePage() {
                 <Textarea
                   value={editableBody}
                   onChange={(e) => setEditableBody(e.target.value)}
-                  className="min-h-[200px] text-sm font-mono leading-relaxed p-4 rounded-xl bg-muted/20"
+                  className="min-h-[180px] text-xs font-mono leading-relaxed p-3.5 rounded-lg bg-background border border-input"
                 />
               ) : (
-                <div className="rounded-2xl border border-border/80 bg-muted/20 p-5 text-sm whitespace-pre-wrap leading-relaxed font-medium">
+                <div className="rounded-lg border border-border bg-secondary/30 p-4 text-xs sm:text-sm whitespace-pre-wrap leading-relaxed text-foreground font-normal">
                   {editableBody || output.body}
                 </div>
               )}

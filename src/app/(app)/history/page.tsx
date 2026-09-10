@@ -95,42 +95,37 @@ export default function HistoryPage() {
   };
 
   return (
-    <div className="flex flex-col gap-6 max-w-5xl mx-auto pb-16">
+    <div className="flex flex-col gap-6 max-w-4xl pb-12">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div className="flex items-center gap-2">
-          <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-primary/10 text-primary">
-            <History className="h-5 w-5" />
-          </div>
-          <div>
-            <h2 className="text-2xl font-bold tracking-tight text-foreground">Saved History</h2>
-            <p className="text-xs text-muted-foreground">Access your past email generations, replies, and improvements.</p>
-          </div>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+        <div>
+          <h2 className="text-xl sm:text-2xl font-semibold tracking-tight text-foreground">Saved History</h2>
+          <p className="text-xs text-muted-foreground mt-0.5">Access past email generations, replies, and improvements.</p>
         </div>
 
-        <div className="relative w-full sm:w-72">
-          <Search className="absolute left-3.5 top-3 h-4 w-4 text-muted-foreground" />
+        <div className="relative w-full sm:w-64">
+          <Search className="absolute left-3 top-2.5 h-3.5 w-3.5 text-muted-foreground" />
           <Input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search history..."
-            className="pl-9 rounded-xl"
+            className="pl-8.5 rounded-lg h-9 text-xs"
           />
         </div>
       </div>
 
       {/* Filter Tabs */}
-      <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
+      <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none">
         {filterTabs.map((tab) => {
           const isSelected = activeFilter === tab.id;
           return (
             <button
               key={tab.id}
               onClick={() => setActiveFilter(tab.id)}
-              className={`flex items-center gap-1.5 rounded-xl px-3.5 py-1.5 text-xs font-semibold whitespace-nowrap transition-all ${
+              className={`flex items-center gap-1 rounded-lg px-3 py-1.5 text-xs font-medium whitespace-nowrap transition-colors ${
                 isSelected
-                  ? "bg-primary text-primary-foreground shadow-sm font-bold"
-                  : "bg-card text-muted-foreground hover:bg-muted border border-border"
+                  ? "bg-foreground text-background font-semibold"
+                  : "bg-card text-muted-foreground hover:bg-secondary hover:text-foreground border border-border"
               }`}
             >
               <span>{tab.label}</span>
@@ -141,43 +136,43 @@ export default function HistoryPage() {
 
       {/* History Items List */}
       {loading ? (
-        <div className="space-y-3">
+        <div className="space-y-2">
           {[1, 2, 3, 4].map((i) => (
-            <div key={i} className="h-24 rounded-2xl border border-border bg-card/60 animate-pulse" />
+            <div key={i} className="h-20 rounded-lg border border-border bg-secondary/30 animate-pulse" />
           ))}
         </div>
       ) : historyItems.length === 0 ? (
-        <div className="rounded-3xl border border-border bg-card p-12 text-center flex flex-col items-center gap-2">
-          <History className="h-10 w-10 text-muted-foreground/50" />
-          <h3 className="text-base font-bold text-foreground">No history items found</h3>
+        <div className="rounded-xl border border-border bg-card p-8 text-center flex flex-col items-center gap-2">
+          <History className="h-8 w-8 text-muted-foreground/50" />
+          <h3 className="text-sm font-semibold text-foreground">No history items found</h3>
           <p className="text-xs text-muted-foreground">
             Generate emails or replies to have them automatically recorded here.
           </p>
         </div>
       ) : (
-        <div className="space-y-3">
+        <div className="space-y-2">
           {historyItems.map((item) => (
             <div
               key={item.id}
               onClick={() => setSelectedItem(item)}
-              className="flex items-start justify-between rounded-2xl border border-border bg-card p-4 sm:p-5 shadow-sm hover:border-primary/50 hover:shadow-md transition-all cursor-pointer group"
+              className="flex items-start justify-between rounded-lg border border-border bg-card p-3.5 shadow-sm hover:border-foreground/30 transition-colors cursor-pointer group"
             >
-              <div className="flex flex-col gap-1.5 max-w-3xl">
+              <div className="flex flex-col gap-1 max-w-3xl">
                 <div className="flex items-center gap-2 flex-wrap">
-                  <Badge variant="secondary" className="text-[10px] uppercase font-bold">
+                  <span className="text-[10px] uppercase font-medium text-muted-foreground bg-secondary px-1.5 py-0.5 rounded">
                     {item.type || "EMAIL"}
-                  </Badge>
-                  <span className="text-xs text-muted-foreground flex items-center gap-1">
+                  </span>
+                  <span className="text-[11px] text-muted-foreground flex items-center gap-1">
                     <Calendar className="h-3 w-3" />
                     {formatDate(item.createdAt)}
                   </span>
                   {item.tone && (
-                    <Badge variant="outline" className="text-[10px] capitalize">
+                    <span className="text-[10px] text-muted-foreground capitalize border border-border px-1.5 py-0.2 rounded">
                       {item.tone}
-                    </Badge>
+                    </span>
                   )}
                 </div>
-                <h4 className="text-sm sm:text-base font-bold text-foreground group-hover:text-primary transition-colors">
+                <h4 className="text-xs sm:text-sm font-semibold text-foreground group-hover:underline">
                   {item.outputSubject || item.prompt || "Email Generation"}
                 </h4>
                 <p className="text-xs text-muted-foreground line-clamp-2 leading-relaxed">
@@ -193,17 +188,17 @@ export default function HistoryPage() {
                     e.stopPropagation();
                     handleCopy(item.outputSubject ? `Subject: ${item.outputSubject}\n\n${item.outputBody}` : item.outputBody);
                   }}
-                  className="h-8 w-8 p-0 rounded-lg text-muted-foreground hover:text-foreground"
+                  className="h-7 w-7 p-0 rounded-md text-muted-foreground hover:text-foreground"
                 >
-                  <Copy className="h-4 w-4" />
+                  <Copy className="h-3.5 w-3.5" />
                 </Button>
                 <Button
                   size="sm"
                   variant="ghost"
                   onClick={(e) => handleDelete(item.id, e)}
-                  className="h-8 w-8 p-0 rounded-lg text-muted-foreground hover:text-destructive"
+                  className="h-7 w-7 p-0 rounded-md text-muted-foreground hover:text-destructive"
                 >
-                  <Trash2 className="h-4 w-4" />
+                  <Trash2 className="h-3.5 w-3.5" />
                 </Button>
               </div>
             </div>
@@ -216,47 +211,47 @@ export default function HistoryPage() {
         <Dialog open={!!selectedItem} onOpenChange={() => setSelectedItem(null)}>
           <DialogHeader>
             <div className="flex items-center gap-2 mb-1">
-              <Badge variant="secondary" className="text-[10px] uppercase font-bold">
+              <span className="text-[10px] uppercase font-medium text-muted-foreground bg-secondary px-1.5 py-0.5 rounded">
                 {selectedItem.type || "EMAIL"}
-              </Badge>
+              </span>
               <span className="text-xs text-muted-foreground">
                 {formatDateTime(selectedItem.createdAt)}
               </span>
             </div>
-            <DialogTitle className="text-lg font-bold">
+            <DialogTitle className="text-base font-semibold">
               {selectedItem.outputSubject || "Saved Email"}
             </DialogTitle>
           </DialogHeader>
 
-          <div className="flex flex-col gap-4 py-2">
+          <div className="flex flex-col gap-3 py-2">
             {selectedItem.prompt && (
-              <div className="rounded-xl bg-muted/40 p-3 border border-border/60 text-xs">
-                <span className="font-semibold text-muted-foreground block mb-0.5">Original Intent:</span>
+              <div className="rounded-lg bg-secondary/30 p-2.5 border border-border text-xs">
+                <span className="font-medium text-muted-foreground block mb-0.5">Original Intent:</span>
                 <span className="text-foreground">{selectedItem.prompt}</span>
               </div>
             )}
 
-            <div className="rounded-xl border border-border bg-card p-4 text-sm whitespace-pre-wrap leading-relaxed font-medium">
+            <div className="rounded-lg border border-border bg-card p-3.5 text-xs sm:text-sm whitespace-pre-wrap leading-relaxed font-normal">
               {selectedItem.outputBody}
             </div>
           </div>
 
-          <DialogFooter className="gap-2">
+          <DialogFooter className="gap-1.5 pt-2">
             <Button
               variant="outline"
               size="sm"
               onClick={() => handleDelete(selectedItem.id)}
-              className="text-destructive hover:bg-destructive/10"
+              className="h-8 text-xs text-destructive hover:bg-destructive/10"
             >
               Delete
             </Button>
             <Button
               size="sm"
               onClick={() => handleCopy(selectedItem.outputSubject ? `Subject: ${selectedItem.outputSubject}\n\n${selectedItem.outputBody}` : selectedItem.outputBody)}
-              className="gap-1.5"
+              className="h-8 text-xs font-medium gap-1.5"
             >
-              {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
-              <span>{copied ? "Copied" : "Copy to Clipboard"}</span>
+              {copied ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}
+              <span>{copied ? "Copied" : "Copy Email"}</span>
             </Button>
           </DialogFooter>
         </Dialog>

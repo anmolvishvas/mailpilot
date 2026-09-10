@@ -137,61 +137,56 @@ export default function TonesPage() {
   };
 
   return (
-    <div className="flex flex-col gap-6 max-w-5xl mx-auto pb-16">
+    <div className="flex flex-col gap-6 max-w-4xl pb-12">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div className="flex items-center gap-2">
-          <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-primary/10 text-primary">
-            <Sliders className="h-5 w-5" />
-          </div>
-          <div>
-            <h2 className="text-2xl font-bold tracking-tight text-foreground">My Custom Tones</h2>
-            <p className="text-xs text-muted-foreground">
-              Define your unique writing styles and instructions to personalize every email.
-            </p>
-          </div>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+        <div>
+          <h2 className="text-xl sm:text-2xl font-semibold tracking-tight text-foreground">Custom Tones</h2>
+          <p className="text-xs text-muted-foreground mt-0.5">
+            Define personal writing styles and specific instructions for AI generations.
+          </p>
         </div>
 
-        <Button onClick={handleOpenCreate} className="gap-2 rounded-xl font-bold shadow-md shadow-primary/20">
-          <Plus className="h-4 w-4" />
-          <span>Create Custom Tone</span>
+        <Button onClick={handleOpenCreate} size="sm" className="gap-1.5 rounded-lg text-xs font-medium h-8">
+          <Plus className="h-3.5 w-3.5" />
+          <span>Create Tone</span>
         </Button>
       </div>
 
       {/* Tones List */}
       {loading ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           {[1, 2].map((i) => (
-            <div key={i} className="h-44 rounded-3xl border border-border bg-card/60 animate-pulse" />
+            <div key={i} className="h-36 rounded-xl border border-border bg-secondary/30 animate-pulse" />
           ))}
         </div>
       ) : tones.length === 0 ? (
-        <div className="rounded-3xl border border-border bg-card p-12 text-center flex flex-col items-center gap-3">
-          <Sliders className="h-10 w-10 text-muted-foreground/50" />
-          <h3 className="text-base font-bold text-foreground">No custom tones created yet</h3>
+        <div className="rounded-xl border border-border bg-card p-8 text-center flex flex-col items-center gap-2">
+          <Sliders className="h-8 w-8 text-muted-foreground/50" />
+          <h3 className="text-sm font-semibold text-foreground">No custom tones created yet</h3>
           <p className="text-xs text-muted-foreground max-w-md">
-            Create a custom tone (e.g. "Executive Brief" or "Casual Client") so the AI writes exactly how you like.
+            Create a custom tone (e.g. "Executive Brief" or "Client Support") to personalize AI writing style.
           </p>
-          <Button onClick={handleOpenCreate} size="sm" className="mt-2 rounded-xl">
-            Create First Tone
+          <Button onClick={handleOpenCreate} size="sm" className="mt-1 h-8 text-xs rounded-lg">
+            Create Tone
           </Button>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           {tones.map((tone) => (
             <div
               key={tone.id}
-              className="flex flex-col justify-between rounded-3xl border border-border bg-card p-6 shadow-sm hover:border-primary/50 transition-all space-y-4"
+              className="flex flex-col justify-between rounded-xl border border-border bg-card p-4 shadow-sm space-y-3"
             >
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <h3 className="text-base font-bold text-foreground">{tone.name}</h3>
+                    <h3 className="text-sm font-semibold text-foreground">{tone.name}</h3>
                     {tone.isDefault && (
-                      <Badge variant="success" className="text-[10px] gap-1">
-                        <Star className="h-3 w-3 fill-current" />
+                      <span className="text-[10px] font-medium bg-secondary border border-border text-foreground px-1.5 py-0.2 rounded flex items-center gap-1">
+                        <Star className="h-2.5 w-2.5 fill-current" />
                         Default
-                      </Badge>
+                      </span>
                     )}
                   </div>
                   <div className="flex items-center gap-1">
@@ -199,15 +194,15 @@ export default function TonesPage() {
                       size="sm"
                       variant="ghost"
                       onClick={() => handleOpenEdit(tone)}
-                      className="h-8 w-8 p-0 rounded-lg"
+                      className="h-7 w-7 p-0 rounded-md text-muted-foreground hover:text-foreground"
                     >
-                      <Edit2 className="h-3.5 w-3.5 text-muted-foreground" />
+                      <Edit2 className="h-3.5 w-3.5" />
                     </Button>
                     <Button
                       size="sm"
                       variant="ghost"
                       onClick={() => handleDelete(tone.id)}
-                      className="h-8 w-8 p-0 rounded-lg text-muted-foreground hover:text-destructive"
+                      className="h-7 w-7 p-0 rounded-md text-muted-foreground hover:text-destructive"
                     >
                       <Trash2 className="h-3.5 w-3.5" />
                     </Button>
@@ -216,9 +211,9 @@ export default function TonesPage() {
 
                 <p className="text-xs text-muted-foreground leading-relaxed">{tone.description}</p>
 
-                <div className="rounded-xl bg-muted/30 border border-border/60 p-3 text-xs">
-                  <span className="font-semibold text-muted-foreground block mb-1">
-                    AI Instructions:
+                <div className="rounded-lg bg-secondary/30 border border-border p-2.5 text-xs">
+                  <span className="font-medium text-muted-foreground block mb-0.5 text-[11px]">
+                    Instructions:
                   </span>
                   <span className="text-foreground leading-relaxed font-mono text-[11px]">
                     {tone.instructions}
@@ -226,19 +221,19 @@ export default function TonesPage() {
                 </div>
               </div>
 
-              <div className="pt-2 border-t border-border/60 flex items-center justify-between">
+              <div className="pt-2 border-t border-border flex items-center justify-between">
                 {!tone.isDefault && (
                   <Button
                     size="sm"
                     variant="outline"
                     onClick={() => handleSetDefault(tone.id)}
-                    className="h-8 text-xs rounded-xl"
+                    className="h-7 text-xs rounded-md font-normal"
                   >
                     Set as Default
                   </Button>
                 )}
                 <span className="text-[11px] text-muted-foreground ml-auto">
-                  Available in Generator dropdown
+                  Available in tone selector
                 </span>
               </div>
             </div>
@@ -250,41 +245,43 @@ export default function TonesPage() {
       <Dialog open={modalOpen} onOpenChange={setModalOpen}>
         <form onSubmit={handleSave}>
           <DialogHeader>
-            <DialogTitle>{editingTone ? "Edit Custom Tone" : "Create Custom Tone"}</DialogTitle>
-            <DialogDescription>
-              Teach MailPilot your specific writing style, formatting rules, and vocabulary preferences.
+            <DialogTitle className="text-base font-semibold">{editingTone ? "Edit Custom Tone" : "Create Custom Tone"}</DialogTitle>
+            <DialogDescription className="text-xs text-muted-foreground">
+              Define formatting rules and tone instructions for the AI to follow.
             </DialogDescription>
           </DialogHeader>
 
-          <div className="space-y-4 py-2">
-            <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-foreground">Tone Name</label>
+          <div className="space-y-3 py-2">
+            <div className="space-y-1">
+              <label className="text-[11px] font-medium text-foreground">Tone Name</label>
               <Input
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                placeholder="e.g. My Work Tone / Executive Brief"
+                placeholder="e.g. Executive Brief"
+                className="h-8 text-xs rounded-lg"
                 required
               />
             </div>
 
-            <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-foreground">Short Description</label>
+            <div className="space-y-1">
+              <label className="text-[11px] font-medium text-foreground">Short Description</label>
               <Input
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
-                placeholder="e.g. Professional but friendly. Keep emails concise and clear."
+                placeholder="e.g. Concise and direct for management updates"
+                className="h-8 text-xs rounded-lg"
                 required
               />
             </div>
 
-            <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-foreground">AI Writing Instructions</label>
+            <div className="space-y-1">
+              <label className="text-[11px] font-medium text-foreground">AI Instructions</label>
               <Textarea
                 value={instructions}
                 onChange={(e) => setInstructions(e.target.value)}
-                placeholder="e.g. Keep emails under 120 words. Start with a warm greeting. Use bullet points for action items. Avoid corporate buzzwords."
+                placeholder="e.g. Keep emails under 100 words. Use bullet points for metrics."
                 required
-                rows={4}
+                className="min-h-[90px] text-xs p-2.5 rounded-lg bg-background border border-input"
               />
             </div>
 
@@ -294,19 +291,19 @@ export default function TonesPage() {
                 id="isDefaultCheckbox"
                 checked={isDefault}
                 onChange={(e) => setIsDefault(e.target.checked)}
-                className="h-4 w-4 rounded border-input text-primary focus:ring-primary cursor-pointer"
+                className="h-3.5 w-3.5 rounded border-input text-foreground focus:ring-ring cursor-pointer"
               />
-              <label htmlFor="isDefaultCheckbox" className="text-xs font-medium text-foreground cursor-pointer">
-                Set as my default tone across the app
+              <label htmlFor="isDefaultCheckbox" className="text-xs text-muted-foreground cursor-pointer">
+                Set as default tone
               </label>
             </div>
           </div>
 
-          <DialogFooter className="gap-2">
-            <Button type="button" variant="outline" onClick={() => setModalOpen(false)}>
+          <DialogFooter className="gap-1.5 pt-2">
+            <Button type="button" variant="outline" size="sm" onClick={() => setModalOpen(false)} className="h-8 text-xs">
               Cancel
             </Button>
-            <Button type="submit" disabled={saving} className="font-bold">
+            <Button type="submit" size="sm" disabled={saving} className="h-8 text-xs font-medium">
               {saving ? "Saving..." : editingTone ? "Update Tone" : "Create Tone"}
             </Button>
           </DialogFooter>

@@ -44,29 +44,29 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
   return (
     <ToastContext.Provider value={{ toasts, addToast, removeToast }}>
       {children}
-      <div className="fixed bottom-4 right-4 z-50 flex flex-col gap-2 max-w-md w-full pointer-events-none p-4">
+      <div className="fixed bottom-4 right-4 z-50 flex flex-col gap-2 max-w-sm w-full pointer-events-none p-4">
         {toasts.map((toast) => (
           <div
             key={toast.id}
             className={cn(
-              "pointer-events-auto flex items-start gap-3 rounded-xl border p-4 shadow-xl backdrop-blur-md transition-all animate-in slide-in-from-bottom-5",
-              toast.type === "success" && "border-emerald-500/30 bg-emerald-950/90 text-emerald-100 dark:bg-emerald-950/95",
-              toast.type === "error" && "border-rose-500/30 bg-rose-950/90 text-rose-100 dark:bg-rose-950/95",
-              (!toast.type || toast.type === "info") && "border-border bg-card/95 text-card-foreground shadow-2xl"
+              "pointer-events-auto flex items-start gap-2.5 rounded-lg border p-3 shadow-md bg-card text-foreground transition-all animate-in slide-in-from-bottom-3",
+              toast.type === "success" && "border-border",
+              toast.type === "error" && "border-destructive/30",
+              (!toast.type || toast.type === "info") && "border-border"
             )}
           >
-            {toast.type === "success" && <CheckCircle2 className="h-5 w-5 text-emerald-400 mt-0.5 shrink-0" />}
-            {toast.type === "error" && <AlertCircle className="h-5 w-5 text-rose-400 mt-0.5 shrink-0" />}
-            {(!toast.type || toast.type === "info") && <Info className="h-5 w-5 text-primary mt-0.5 shrink-0" />}
-            <div className="flex-1 text-sm">
+            {toast.type === "success" && <CheckCircle2 className="h-4 w-4 text-foreground mt-0.5 shrink-0" />}
+            {toast.type === "error" && <AlertCircle className="h-4 w-4 text-destructive mt-0.5 shrink-0" />}
+            {(!toast.type || toast.type === "info") && <Info className="h-4 w-4 text-muted-foreground mt-0.5 shrink-0" />}
+            <div className="flex-1 text-xs">
               {toast.title && <div className="font-semibold">{toast.title}</div>}
-              <div>{toast.description}</div>
+              <div className="text-muted-foreground">{toast.description}</div>
             </div>
             <button
               onClick={() => removeToast(toast.id)}
-              className="rounded-lg p-1 text-muted-foreground hover:bg-white/10 transition-colors"
+              className="rounded-md p-1 text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors"
             >
-              <X className="h-4 w-4" />
+              <X className="h-3.5 w-3.5" />
             </button>
           </div>
         ))}

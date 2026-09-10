@@ -123,56 +123,52 @@ export default function SettingsPage() {
   };
 
   return (
-    <div className="flex flex-col gap-6 max-w-4xl mx-auto pb-16">
-      <div className="flex items-center gap-2">
-        <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-primary/10 text-primary">
-          <Settings className="h-5 w-5" />
-        </div>
-        <div>
-          <h2 className="text-2xl font-bold tracking-tight text-foreground">Settings & Preferences</h2>
-          <p className="text-xs text-muted-foreground">Manage your profile, writing defaults, AI custom instructions, and security.</p>
-        </div>
+    <div className="flex flex-col gap-6 max-w-4xl pb-12">
+      <div>
+        <h2 className="text-xl sm:text-2xl font-semibold tracking-tight text-foreground">Settings & Preferences</h2>
+        <p className="text-xs text-muted-foreground mt-0.5">Manage your profile, writing defaults, AI custom instructions, and password.</p>
       </div>
 
-      <div className="flex flex-col gap-6">
+      <div className="flex flex-col gap-5">
         {/* Profile & Defaults Form */}
-        <Card className="rounded-3xl border border-border bg-card shadow-sm">
+        <Card className="rounded-xl border border-border bg-card shadow-sm">
           <form onSubmit={handleSaveProfile}>
-            <CardHeader className="p-6 border-b border-border/60">
-              <CardTitle className="text-base font-bold flex items-center gap-2">
-                <User className="h-4 w-4 text-primary" />
+            <CardHeader className="p-4 sm:p-5 border-b border-border">
+              <CardTitle className="text-sm font-semibold flex items-center gap-2">
+                <User className="h-4 w-4 text-muted-foreground" />
                 <span>Profile & Writing Defaults</span>
               </CardTitle>
               <CardDescription className="text-xs text-muted-foreground">
-                Set default parameters used when composing emails and replies.
+                Set default parameters applied when composing emails and replies.
               </CardDescription>
             </CardHeader>
 
-            <CardContent className="p-6 space-y-4">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="space-y-1.5">
-                  <label className="text-xs font-semibold text-foreground">Full Name</label>
+            <CardContent className="p-4 sm:p-5 space-y-3.5">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="space-y-1">
+                  <label className="text-[11px] font-medium text-foreground">Full Name</label>
                   <Input
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     placeholder="Your Name"
+                    className="h-8 text-xs rounded-lg"
                     required
                   />
                 </div>
 
-                <div className="space-y-1.5">
-                  <label className="text-xs font-semibold text-foreground">Email Address</label>
-                  <Input value={email} disabled className="bg-muted/40 cursor-not-allowed opacity-75" />
+                <div className="space-y-1">
+                  <label className="text-[11px] font-medium text-foreground">Email Address</label>
+                  <Input value={email} disabled className="h-8 text-xs rounded-lg bg-secondary/50 cursor-not-allowed text-muted-foreground" />
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
-                <div className="space-y-1.5">
-                  <label className="text-xs font-semibold text-foreground">Default Tone</label>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
+                <div className="space-y-1">
+                  <label className="text-[11px] font-medium text-foreground">Default Tone</label>
                   <select
                     value={defaultTone}
                     onChange={(e) => setDefaultTone(e.target.value)}
-                    className="h-10 w-full rounded-xl border border-input bg-background px-3 text-sm font-medium"
+                    className="h-8 w-full rounded-md border border-input bg-background px-2.5 text-xs font-medium focus:ring-1 focus:ring-ring"
                   >
                     {standardTones.map((t) => (
                       <option key={t.value} value={t.value}>
@@ -182,12 +178,12 @@ export default function SettingsPage() {
                   </select>
                 </div>
 
-                <div className="space-y-1.5">
-                  <label className="text-xs font-semibold text-foreground">Default Length</label>
+                <div className="space-y-1">
+                  <label className="text-[11px] font-medium text-foreground">Default Length</label>
                   <select
                     value={defaultLength}
                     onChange={(e) => setDefaultLength(e.target.value)}
-                    className="h-10 w-full rounded-xl border border-input bg-background px-3 text-sm font-medium"
+                    className="h-8 w-full rounded-md border border-input bg-background px-2.5 text-xs font-medium focus:ring-1 focus:ring-ring"
                   >
                     {lengths.map((l) => (
                       <option key={l.value} value={l.value}>
@@ -197,12 +193,12 @@ export default function SettingsPage() {
                   </select>
                 </div>
 
-                <div className="space-y-1.5">
-                  <label className="text-xs font-semibold text-foreground">Default Language</label>
+                <div className="space-y-1">
+                  <label className="text-[11px] font-medium text-foreground">Default Language</label>
                   <select
                     value={defaultLanguage}
                     onChange={(e) => setDefaultLanguage(e.target.value)}
-                    className="h-10 w-full rounded-xl border border-input bg-background px-3 text-sm font-medium"
+                    className="h-8 w-full rounded-md border border-input bg-background px-2.5 text-xs font-medium focus:ring-1 focus:ring-ring"
                   >
                     {languages.map((l) => (
                       <option key={l.code} value={l.code}>
@@ -213,24 +209,25 @@ export default function SettingsPage() {
                 </div>
               </div>
 
-              <div className="space-y-1.5 pt-2">
-                <label className="text-xs font-semibold text-foreground">
+              <div className="space-y-1 pt-1">
+                <label className="text-[11px] font-medium text-foreground">
                   Custom AI Instructions (Global)
                 </label>
                 <Textarea
                   value={customInstructions}
                   onChange={(e) => setCustomInstructions(e.target.value)}
                   placeholder="e.g. Always keep bullet points for next steps, prefer concise sentences, sign off as [Your Name]."
+                  className="min-h-[80px] text-xs p-2.5 rounded-lg bg-background border border-input"
                   rows={3}
                 />
-                <p className="text-[11px] text-muted-foreground">
+                <p className="text-[10px] text-muted-foreground">
                   These instructions will be automatically provided to the AI during all generation requests.
                 </p>
               </div>
 
-              <div className="flex justify-end pt-3">
-                <Button type="submit" disabled={savingProfile} className="gap-2 rounded-xl font-bold">
-                  <Save className="h-4 w-4" />
+              <div className="flex justify-end pt-2">
+                <Button type="submit" size="sm" disabled={savingProfile} className="h-8 text-xs font-medium gap-1.5 rounded-lg">
+                  <Save className="h-3.5 w-3.5" />
                   <span>{savingProfile ? "Saving..." : "Save Preferences"}</span>
                 </Button>
               </div>
@@ -239,70 +236,75 @@ export default function SettingsPage() {
         </Card>
 
         {/* Security / Password Form */}
-        <Card className="rounded-3xl border border-border bg-card shadow-sm">
+        <Card className="rounded-xl border border-border bg-card shadow-sm">
           <form onSubmit={handleSavePassword}>
-            <CardHeader className="p-6 border-b border-border/60">
-              <CardTitle className="text-base font-bold flex items-center gap-2">
-                <Shield className="h-4 w-4 text-primary" />
+            <CardHeader className="p-4 sm:p-5 border-b border-border">
+              <CardTitle className="text-sm font-semibold flex items-center gap-2">
+                <Shield className="h-4 w-4 text-muted-foreground" />
                 <span>Security & Password</span>
               </CardTitle>
               <CardDescription className="text-xs text-muted-foreground">
-                Update your account password or sign out from your active session.
+                Update account password or sign out from your active session.
               </CardDescription>
             </CardHeader>
 
-            <CardContent className="p-6 space-y-4">
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <div className="space-y-1.5">
-                  <label className="text-xs font-semibold text-foreground">Current Password</label>
+            <CardContent className="p-4 sm:p-5 space-y-3.5">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div className="space-y-1">
+                  <label className="text-[11px] font-medium text-foreground">Current Password</label>
                   <Input
                     type="password"
                     value={currentPassword}
                     onChange={(e) => setCurrentPassword(e.target.value)}
                     placeholder="••••••••"
+                    className="h-8 text-xs rounded-lg"
                   />
                 </div>
 
-                <div className="space-y-1.5">
-                  <label className="text-xs font-semibold text-foreground">New Password</label>
+                <div className="space-y-1">
+                  <label className="text-[11px] font-medium text-foreground">New Password</label>
                   <Input
                     type="password"
                     value={newPassword}
                     onChange={(e) => setNewPassword(e.target.value)}
                     placeholder="••••••••"
                     minLength={6}
+                    className="h-8 text-xs rounded-lg"
                   />
                 </div>
 
-                <div className="space-y-1.5">
-                  <label className="text-xs font-semibold text-foreground">Confirm New Password</label>
+                <div className="space-y-1">
+                  <label className="text-[11px] font-medium text-foreground">Confirm New Password</label>
                   <Input
                     type="password"
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     placeholder="••••••••"
                     minLength={6}
+                    className="h-8 text-xs rounded-lg"
                   />
                 </div>
               </div>
 
-              <div className="flex items-center justify-between pt-3 border-t border-border/60">
+              <div className="flex items-center justify-between pt-2 border-t border-border">
                 <Button
                   type="button"
                   variant="outline"
+                  size="sm"
                   onClick={() => signOut({ callbackUrl: "/login" })}
-                  className="gap-2 text-destructive hover:bg-destructive/10 rounded-xl"
+                  className="h-8 text-xs gap-1.5 text-destructive hover:bg-destructive/10 rounded-lg"
                 >
-                  <LogOut className="h-4 w-4" />
+                  <LogOut className="h-3.5 w-3.5" />
                   <span>Sign Out</span>
                 </Button>
 
                 <Button
                   type="submit"
+                  size="sm"
                   disabled={savingSecurity || !newPassword}
-                  className="gap-2 rounded-xl font-bold"
+                  className="h-8 text-xs font-medium gap-1.5 rounded-lg"
                 >
-                  <Save className="h-4 w-4" />
+                  <Save className="h-3.5 w-3.5" />
                   <span>{savingSecurity ? "Updating..." : "Update Password"}</span>
                 </Button>
               </div>

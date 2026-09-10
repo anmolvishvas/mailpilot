@@ -81,27 +81,26 @@ export function TemplateFillModal({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <form onSubmit={handleSubmit}>
         <DialogHeader>
-          <div className="flex items-center gap-2 mb-1">
-            <Badge variant="secondary" className="text-[10px] uppercase font-bold">
+          <div className="flex items-center gap-2 mb-0.5">
+            <span className="text-[10px] uppercase font-medium text-muted-foreground bg-secondary px-1.5 py-0.5 rounded">
               {template.category}
-            </Badge>
+            </span>
           </div>
-          <DialogTitle className="text-xl font-bold flex items-center gap-2">
-            <FileText className="h-5 w-5 text-primary" />
+          <DialogTitle className="text-base font-semibold flex items-center gap-2">
             <span>{template.title}</span>
           </DialogTitle>
-          <DialogDescription className="text-sm text-muted-foreground">
+          <DialogDescription className="text-xs text-muted-foreground">
             {template.description}
           </DialogDescription>
         </DialogHeader>
 
         {/* Dynamic Fields */}
-        <div className="flex flex-col gap-4 py-2 max-h-[55vh] overflow-y-auto pr-1">
+        <div className="flex flex-col gap-3 py-2 max-h-[55vh] overflow-y-auto pr-1">
           {parsedFields.map((field) => (
-            <div key={field.name} className="flex flex-col gap-1.5">
-              <label className="text-xs font-semibold text-foreground flex items-center gap-1">
+            <div key={field.name} className="flex flex-col gap-1">
+              <label className="text-[11px] font-medium text-foreground flex items-center gap-1">
                 <span>{field.label}</span>
-                {field.required && <span className="text-rose-500">*</span>}
+                {field.required && <span className="text-destructive">*</span>}
               </label>
               {field.type === "textarea" ? (
                 <Textarea
@@ -111,7 +110,7 @@ export function TemplateFillModal({
                   }
                   placeholder={field.placeholder || `Enter ${field.label.toLowerCase()}`}
                   required={field.required}
-                  rows={3}
+                  className="min-h-[80px] text-xs p-2.5 rounded-lg bg-background border border-input"
                 />
               ) : (
                 <Input
@@ -121,19 +120,20 @@ export function TemplateFillModal({
                   }
                   placeholder={field.placeholder || `Enter ${field.label.toLowerCase()}`}
                   required={field.required}
+                  className="h-8 text-xs rounded-lg"
                 />
               )}
             </div>
           ))}
 
           {/* Tone & Length Overrides */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 border-t border-border/60">
-            <div className="flex flex-col gap-1.5">
-              <label className="text-xs font-semibold text-muted-foreground">Tone</label>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 border-t border-border">
+            <div className="flex flex-col gap-1">
+              <label className="text-[11px] font-medium text-muted-foreground">Tone</label>
               <select
                 value={tone}
                 onChange={(e) => setTone(e.target.value)}
-                className="h-10 w-full rounded-xl border border-input bg-background px-3 text-sm"
+                className="h-8 w-full rounded-md border border-input bg-background px-2.5 text-xs font-medium focus:ring-1 focus:ring-ring"
               >
                 {standardTones.map((t) => (
                   <option key={t.value} value={t.value}>
@@ -142,12 +142,12 @@ export function TemplateFillModal({
                 ))}
               </select>
             </div>
-            <div className="flex flex-col gap-1.5">
-              <label className="text-xs font-semibold text-muted-foreground">Length</label>
+            <div className="flex flex-col gap-1">
+              <label className="text-[11px] font-medium text-muted-foreground">Length</label>
               <select
                 value={length}
                 onChange={(e) => setLength(e.target.value as LengthType)}
-                className="h-10 w-full rounded-xl border border-input bg-background px-3 text-sm"
+                className="h-8 w-full rounded-md border border-input bg-background px-2.5 text-xs font-medium focus:ring-1 focus:ring-ring"
               >
                 {lengths.map((l) => (
                   <option key={l.value} value={l.value}>
@@ -159,12 +159,12 @@ export function TemplateFillModal({
           </div>
         </div>
 
-        <DialogFooter className="gap-2">
-          <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
+        <DialogFooter className="gap-1.5 pt-2">
+          <Button type="button" variant="outline" size="sm" onClick={() => onOpenChange(false)} className="h-8 text-xs">
             Cancel
           </Button>
-          <Button type="submit" disabled={loading} className="gap-2 shadow-md shadow-primary/20">
-            <Sparkles className="h-4 w-4" />
+          <Button type="submit" size="sm" disabled={loading} className="h-8 text-xs font-medium gap-1.5">
+            <Sparkles className="h-3.5 w-3.5" />
             <span>{loading ? "Writing Email..." : "Generate Email"}</span>
           </Button>
         </DialogFooter>

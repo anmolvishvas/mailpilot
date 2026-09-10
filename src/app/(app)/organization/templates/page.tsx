@@ -167,47 +167,49 @@ export default function SharedTemplatesPage() {
   return (
     <div className="flex flex-col gap-6 max-w-5xl mx-auto pb-16">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-border pb-5">
         <div className="flex items-center gap-3">
           <Link href="/organization">
-            <Button variant="ghost" size="iconSm" className="rounded-xl">
+            <Button variant="ghost" size="iconSm" className="rounded-lg h-8 w-8">
               <ArrowLeft className="h-4 w-4" />
             </Button>
           </Link>
-          <div className="flex items-center gap-2">
-            <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-blue-500/10 text-blue-500">
-              <FolderLock className="h-5 w-5" />
+          <div className="flex items-center gap-3">
+            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-secondary text-foreground">
+              <FolderLock className="h-4 w-4" />
             </div>
             <div>
-              <h2 className="text-2xl font-bold tracking-tight text-foreground">Shared Templates</h2>
+              <h1 className="text-xl font-semibold tracking-tight text-foreground">Shared Templates</h1>
               <p className="text-xs text-muted-foreground">Standardized email templates accessible across your organization.</p>
             </div>
           </div>
         </div>
 
         {canManage && (
-          <Button onClick={() => setCreateModalOpen(true)} className="gap-2 rounded-xl font-bold">
-            <Plus className="h-4 w-4" />
+          <Button onClick={() => setCreateModalOpen(true)} className="gap-2 rounded-lg font-medium text-xs h-9">
+            <Plus className="h-3.5 w-3.5" />
             <span>Create Shared Template</span>
           </Button>
         )}
       </div>
 
       {loading ? (
-        <div className="h-64 rounded-3xl border border-border bg-card/60 animate-pulse" />
+        <div className="h-64 rounded-xl border border-border bg-card/60 animate-pulse" />
       ) : !selectedOrg ? (
-        <Card className="rounded-3xl border border-border p-12 text-center">
-          <p className="text-sm text-muted-foreground">Please create or join an organization first.</p>
+        <Card className="rounded-xl border border-border p-12 text-center">
+          <p className="text-xs text-muted-foreground">Please create or join an organization first.</p>
         </Card>
       ) : selectedOrg.sharedTemplates?.length === 0 ? (
-        <Card className="rounded-3xl border border-border p-12 text-center flex flex-col items-center gap-3">
-          <FolderLock className="h-10 w-10 text-muted-foreground/50" />
-          <h3 className="text-base font-bold text-foreground">No shared templates yet</h3>
+        <Card className="rounded-xl border border-border p-12 text-center flex flex-col items-center gap-3">
+          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-secondary text-muted-foreground">
+            <FolderLock className="h-5 w-5" />
+          </div>
+          <h3 className="text-base font-semibold text-foreground">No shared templates yet</h3>
           <p className="text-xs text-muted-foreground max-w-md">
             Create standard company replies, customer refund confirmations, or team updates for all members.
           </p>
           {canManage && (
-            <Button onClick={() => setCreateModalOpen(true)} size="sm" className="mt-2 rounded-xl">
+            <Button onClick={() => setCreateModalOpen(true)} size="sm" className="mt-2 rounded-lg text-xs h-8">
               Create First Shared Template
             </Button>
           )}
@@ -221,11 +223,11 @@ export default function SharedTemplatesPage() {
                 setActiveTemplate(template);
                 setFillModalOpen(true);
               }}
-              className="flex flex-col justify-between rounded-3xl border border-border bg-card p-6 shadow-sm hover:border-primary/50 transition-all cursor-pointer group space-y-4"
+              className="flex flex-col justify-between rounded-xl border border-border bg-card p-5 hover:border-foreground/20 transition-all cursor-pointer group space-y-4 shadow-sm"
             >
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
-                  <Badge variant="info" className="text-[10px] uppercase font-bold">
+                  <Badge variant="secondary" className="text-[10px] uppercase font-semibold">
                     Company Shared
                   </Badge>
                   {canManage && (
@@ -233,13 +235,13 @@ export default function SharedTemplatesPage() {
                       size="sm"
                       variant="ghost"
                       onClick={(e) => handleDeleteSharedTemplate(template.id, e)}
-                      className="h-8 w-8 p-0 rounded-lg text-muted-foreground hover:text-destructive"
+                      className="h-7 w-7 p-0 rounded-md text-muted-foreground hover:text-destructive"
                     >
                       <Trash2 className="h-3.5 w-3.5" />
                     </Button>
                   )}
                 </div>
-                <h3 className="text-base font-bold text-foreground group-hover:text-primary transition-colors">
+                <h3 className="text-sm font-semibold text-foreground group-hover:text-primary transition-colors">
                   {template.title}
                 </h3>
                 <p className="text-xs text-muted-foreground line-clamp-2 leading-relaxed">
@@ -247,9 +249,9 @@ export default function SharedTemplatesPage() {
                 </p>
               </div>
 
-              <div className="pt-3 border-t border-border/60 flex items-center justify-between text-[11px] text-muted-foreground">
-                <span>Created by: {template.createdBy?.name || "Admin"}</span>
-                <span className="font-semibold text-primary flex items-center gap-1">
+              <div className="pt-3 border-t border-border flex items-center justify-between text-[11px] text-muted-foreground">
+                <span>By: {template.createdBy?.name || "Admin"}</span>
+                <span className="font-medium text-foreground flex items-center gap-1 group-hover:text-primary transition-colors">
                   Use Template <ArrowRight className="h-3 w-3" />
                 </span>
               </div>
@@ -270,7 +272,7 @@ export default function SharedTemplatesPage() {
 
           <div className="space-y-4 py-2">
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-foreground">Template Title</label>
+              <label className="text-xs font-medium text-foreground">Template Title</label>
               <Input
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
@@ -280,7 +282,7 @@ export default function SharedTemplatesPage() {
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-foreground">Description</label>
+              <label className="text-xs font-medium text-foreground">Description</label>
               <Input
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
@@ -290,7 +292,7 @@ export default function SharedTemplatesPage() {
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-foreground">AI Prompt Template</label>
+              <label className="text-xs font-medium text-foreground">AI Prompt Template</label>
               <Textarea
                 value={promptTemplate}
                 onChange={(e) => setPromptTemplate(e.target.value)}
@@ -302,10 +304,10 @@ export default function SharedTemplatesPage() {
           </div>
 
           <DialogFooter className="gap-2">
-            <Button type="button" variant="outline" onClick={() => setCreateModalOpen(false)}>
+            <Button type="button" variant="outline" onClick={() => setCreateModalOpen(false)} className="rounded-lg text-xs h-9">
               Cancel
             </Button>
-            <Button type="submit" disabled={creating} className="font-bold">
+            <Button type="submit" disabled={creating} className="rounded-lg text-xs h-9 font-medium">
               {creating ? "Creating..." : "Create Template"}
             </Button>
           </DialogFooter>

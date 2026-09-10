@@ -128,58 +128,50 @@ export default function TemplatesPage() {
   };
 
   return (
-    <div className="flex flex-col gap-6 pb-16">
+    <div className="flex flex-col gap-6 pb-12 max-w-5xl">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div className="flex items-center gap-2">
-          <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-purple-500/10 text-purple-600 dark:text-purple-400">
-            <FileText className="h-5 w-5" />
-          </div>
-          <div>
-            <h2 className="text-2xl font-bold tracking-tight text-foreground">Template Library</h2>
-            <p className="text-xs text-muted-foreground">35+ ready-to-use email templates across work, business, education & more.</p>
-          </div>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+        <div>
+          <h2 className="text-xl sm:text-2xl font-semibold tracking-tight text-foreground">Template Library</h2>
+          <p className="text-xs text-muted-foreground mt-0.5">35+ ready-to-use email templates for work, business, academic, and personal use.</p>
         </div>
 
-        <div className="relative w-full sm:w-72">
-          <Search className="absolute left-3.5 top-3 h-4 w-4 text-muted-foreground" />
+        <div className="relative w-full sm:w-64">
+          <Search className="absolute left-3 top-2.5 h-3.5 w-3.5 text-muted-foreground" />
           <Input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search templates..."
-            className="pl-9 rounded-xl"
+            className="pl-8.5 rounded-lg h-9 text-xs"
           />
         </div>
       </div>
 
       {/* Generated Output Preview if generated */}
       {output && (
-        <Card className="rounded-3xl border-2 border-primary/40 bg-card shadow-2xl overflow-hidden animate-in fade-in">
-          <CardHeader className="p-6 border-b border-border/60 bg-primary/5">
+        <Card className="rounded-xl border border-border bg-card shadow-sm overflow-hidden animate-in fade-in">
+          <CardHeader className="p-4 border-b border-border bg-secondary/30">
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Sparkles className="h-5 w-5 text-primary" />
-                <CardTitle className="text-base font-bold text-foreground">
-                  Generated: {lastGeneratedTemplateTitle}
-                </CardTitle>
-              </div>
-              <Badge variant="default" className="text-xs capitalize">
-                {output.tone} Tone
+              <CardTitle className="text-sm font-semibold text-foreground">
+                Generated: {lastGeneratedTemplateTitle}
+              </CardTitle>
+              <Badge variant="outline" className="text-[11px] capitalize font-medium">
+                {output.tone}
               </Badge>
             </div>
-            <div className="text-xs font-semibold text-foreground pt-1">
+            <div className="text-xs text-foreground font-medium pt-0.5">
               Subject: {output.subject}
             </div>
           </CardHeader>
-          <CardContent className="p-6">
+          <CardContent className="p-4">
             {isEditing ? (
               <textarea
                 value={editableBody}
                 onChange={(e) => setEditableBody(e.target.value)}
-                className="w-full min-h-[180px] text-sm font-mono leading-relaxed p-4 rounded-xl bg-muted/20 border border-border"
+                className="w-full min-h-[160px] text-xs font-mono leading-relaxed p-3 rounded-lg bg-background border border-input"
               />
             ) : (
-              <div className="rounded-2xl border border-border/80 bg-muted/20 p-5 text-sm whitespace-pre-wrap leading-relaxed font-medium">
+              <div className="rounded-lg border border-border bg-secondary/20 p-4 text-xs sm:text-sm whitespace-pre-wrap leading-relaxed font-normal">
                 {editableBody || output.body}
               </div>
             )}
@@ -197,7 +189,7 @@ export default function TemplatesPage() {
       )}
 
       {/* Category Tabs */}
-      <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
+      <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none">
         {categories.map((cat) => {
           const Icon = cat.icon;
           const isSelected = selectedCategory === cat.id;
@@ -205,13 +197,13 @@ export default function TemplatesPage() {
             <button
               key={cat.id}
               onClick={() => setSelectedCategory(cat.id)}
-              className={`flex items-center gap-2 rounded-xl px-4 py-2 text-xs font-semibold whitespace-nowrap transition-all ${
+              className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium whitespace-nowrap transition-colors ${
                 isSelected
-                  ? "bg-primary text-primary-foreground shadow-sm shadow-primary/20"
-                  : "bg-card text-muted-foreground hover:bg-muted border border-border"
+                  ? "bg-foreground text-background font-semibold"
+                  : "bg-card text-muted-foreground hover:bg-secondary hover:text-foreground border border-border"
               }`}
             >
-              <Icon className="h-3.5 w-3.5" />
+              <Icon className="h-3 w-3" />
               <span>{cat.label}</span>
             </button>
           );
@@ -220,35 +212,35 @@ export default function TemplatesPage() {
 
       {/* Template Grid */}
       {loading ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
           {[1, 2, 3, 4, 5, 6].map((i) => (
-            <div key={i} className="h-44 rounded-3xl border border-border bg-card/60 p-6 animate-pulse" />
+            <div key={i} className="h-36 rounded-xl border border-border bg-secondary/30 p-4 animate-pulse" />
           ))}
         </div>
       ) : filteredTemplates.length === 0 ? (
-        <div className="rounded-3xl border border-border bg-card p-12 text-center flex flex-col items-center gap-2">
-          <FileText className="h-10 w-10 text-muted-foreground/50" />
-          <h3 className="text-base font-bold text-foreground">No templates found</h3>
+        <div className="rounded-xl border border-border bg-card p-8 text-center flex flex-col items-center gap-2">
+          <FileText className="h-8 w-8 text-muted-foreground/50" />
+          <h3 className="text-sm font-semibold text-foreground">No templates found</h3>
           <p className="text-xs text-muted-foreground">Try clearing your search query or switching categories.</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
           {filteredTemplates.map((template) => (
             <div
               key={template.id}
               onClick={() => handleOpenFillModal(template)}
-              className="flex flex-col justify-between rounded-3xl border border-border bg-card p-6 shadow-sm hover:shadow-md hover:border-primary/50 transition-all cursor-pointer group"
+              className="flex flex-col justify-between rounded-xl border border-border bg-card p-4 shadow-sm hover:border-foreground/30 transition-colors cursor-pointer group"
             >
-              <div className="space-y-2">
+              <div className="space-y-1.5">
                 <div className="flex items-center justify-between">
-                  <Badge variant="secondary" className="text-[10px] uppercase font-bold">
+                  <span className="text-[10px] uppercase font-medium text-muted-foreground bg-secondary px-1.5 py-0.5 rounded">
                     {template.category}
-                  </Badge>
-                  <span className="text-[11px] text-muted-foreground group-hover:text-primary transition-colors flex items-center gap-1 font-medium">
-                    Use Template <ArrowRight className="h-3 w-3" />
+                  </span>
+                  <span className="text-[11px] text-muted-foreground group-hover:text-foreground transition-colors flex items-center gap-1 font-medium">
+                    Use <ArrowRight className="h-3 w-3" />
                   </span>
                 </div>
-                <h3 className="text-base font-bold text-foreground group-hover:text-primary transition-colors">
+                <h3 className="text-xs font-semibold text-foreground group-hover:underline">
                   {template.title}
                 </h3>
                 <p className="text-xs text-muted-foreground line-clamp-2 leading-relaxed">
@@ -256,9 +248,9 @@ export default function TemplatesPage() {
                 </p>
               </div>
 
-              <div className="mt-4 pt-3 border-t border-border/60 flex items-center justify-between text-[11px] text-muted-foreground">
-                <span>For: <strong>{template.defaultRecipient || "Anyone"}</strong></span>
-                <span className="capitalize">{template.defaultTone || "Professional"} tone</span>
+              <div className="mt-3 pt-2.5 border-t border-border flex items-center justify-between text-[11px] text-muted-foreground">
+                <span>For: {template.defaultRecipient || "Anyone"}</span>
+                <span className="capitalize">{template.defaultTone || "Professional"}</span>
               </div>
             </div>
           ))}

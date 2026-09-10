@@ -89,29 +89,22 @@ export default function TranslatePage() {
   };
 
   return (
-    <div className="flex flex-col gap-6 max-w-5xl mx-auto pb-12">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-cyan-500/10 text-cyan-600 dark:text-cyan-400">
-            <Languages className="h-5 w-5" />
-          </div>
-          <div>
-            <h2 className="text-2xl font-bold tracking-tight text-foreground">Email Translation</h2>
-            <p className="text-xs text-muted-foreground">Translate emails across 11 languages while maintaining tone and business nuance.</p>
-          </div>
-        </div>
+    <div className="flex flex-col gap-6 max-w-4xl pb-10">
+      <div>
+        <h2 className="text-xl sm:text-2xl font-semibold tracking-tight text-foreground">Email Translation</h2>
+        <p className="text-xs text-muted-foreground mt-0.5">Translate emails across 11 languages while maintaining tone and business nuance.</p>
       </div>
 
-      <Card className="rounded-3xl border-border/80 shadow-xl overflow-hidden bg-card/95">
-        <CardContent className="p-6 sm:p-8 flex flex-col gap-6">
+      <Card className="rounded-xl border border-border bg-card shadow-sm overflow-hidden">
+        <CardContent className="p-5 flex flex-col gap-4">
           {/* Language Selection Bar */}
-          <div className="flex flex-col sm:flex-row items-center gap-3 bg-muted/40 p-3 rounded-2xl border border-border/60">
+          <div className="flex flex-col sm:flex-row items-center gap-2.5 bg-secondary/30 p-2.5 rounded-lg border border-border">
             <div className="flex-1 w-full flex flex-col gap-1">
-              <span className="text-[11px] font-semibold text-muted-foreground uppercase">From</span>
+              <span className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">From</span>
               <select
                 value={sourceLang}
                 onChange={(e) => setSourceLang(e.target.value)}
-                className="h-10 w-full rounded-xl border border-input bg-background px-3 text-sm font-medium"
+                className="h-8 w-full rounded-md border border-input bg-background px-2.5 text-xs font-medium focus:ring-1 focus:ring-ring"
               >
                 {supportedLanguages.map((l) => (
                   <option key={l.code} value={l.code}>
@@ -127,17 +120,17 @@ export default function TranslatePage() {
               size="icon"
               onClick={handleSwap}
               title="Swap languages"
-              className="rounded-xl mt-4 sm:mt-5 shrink-0"
+              className="h-8 w-8 rounded-md mt-0 sm:mt-4 shrink-0"
             >
-              <ArrowLeftRight className="h-4 w-4" />
+              <ArrowLeftRight className="h-3.5 w-3.5" />
             </Button>
 
             <div className="flex-1 w-full flex flex-col gap-1">
-              <span className="text-[11px] font-semibold text-muted-foreground uppercase">To</span>
+              <span className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">To</span>
               <select
                 value={targetLang}
                 onChange={(e) => setTargetLang(e.target.value)}
-                className="h-10 w-full rounded-xl border border-input bg-background px-3 text-sm font-medium"
+                className="h-8 w-full rounded-md border border-input bg-background px-2.5 text-xs font-medium focus:ring-1 focus:ring-ring"
               >
                 {supportedLanguages.map((l) => (
                   <option key={l.code} value={l.code}>
@@ -149,26 +142,26 @@ export default function TranslatePage() {
           </div>
 
           {/* Email Text */}
-          <div className="flex flex-col gap-2">
-            <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+          <div className="flex flex-col gap-1.5">
+            <label className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
               Original Email
             </label>
             <Textarea
               value={inputEmail}
               onChange={(e) => setInputEmail(e.target.value)}
               placeholder="Type or paste the email you want to translate..."
-              className="min-h-[140px] text-sm p-4 rounded-2xl bg-muted/30 focus:bg-background border-border"
+              className="min-h-[120px] text-sm p-3 rounded-lg bg-background border border-input focus:border-ring"
             />
           </div>
 
           {/* Tone Preservation Checkbox */}
-          <div className="flex items-center justify-between rounded-xl border border-border/70 bg-muted/20 p-3">
+          <div className="flex items-center justify-between rounded-lg border border-border bg-secondary/20 p-2.5">
             <div className="flex items-center gap-2">
-              <Shield className="h-4 w-4 text-cyan-600 dark:text-cyan-400" />
+              <Shield className="h-3.5 w-3.5 text-muted-foreground" />
               <div className="flex flex-col">
-                <span className="text-xs font-bold text-foreground">Preserve Professional Tone</span>
+                <span className="text-xs font-medium text-foreground">Preserve Professional Tone</span>
                 <span className="text-[11px] text-muted-foreground">
-                  Keeps the original formality and contextual intent instead of literal awkward translations.
+                  Keeps the original formality and contextual intent.
                 </span>
               </div>
             </div>
@@ -176,18 +169,18 @@ export default function TranslatePage() {
               type="checkbox"
               checked={preserveTone}
               onChange={(e) => setPreserveTone(e.target.checked)}
-              className="h-4 w-4 rounded border-input text-primary focus:ring-primary cursor-pointer"
+              className="h-3.5 w-3.5 rounded border-input text-foreground focus:ring-ring cursor-pointer"
             />
           </div>
 
-          <div className="flex justify-end pt-2">
+          <div className="flex justify-end pt-1">
             <Button
-              size="lg"
+              size="sm"
               onClick={handleTranslate}
               disabled={loading || !inputEmail.trim()}
-              className="gap-2 rounded-2xl px-8 font-bold shadow-lg shadow-cyan-500/25 bg-cyan-600 hover:bg-cyan-700 text-white"
+              className="h-8 px-4 gap-1.5 rounded-lg text-xs font-medium"
             >
-              <Globe className="h-4 w-4" />
+              <Globe className="h-3.5 w-3.5" />
               <span>{loading ? "Translating..." : "Translate Email"}</span>
             </Button>
           </div>
@@ -195,13 +188,12 @@ export default function TranslatePage() {
 
         {output && (
           <div className="border-t border-border bg-card">
-            <div className="p-6 sm:p-8 flex flex-col gap-4">
-              <div className="flex items-center justify-between border-b border-border/60 pb-3">
-                <span className="text-xs font-bold uppercase tracking-wider text-cyan-600 dark:text-cyan-400 flex items-center gap-1.5">
-                  <Sparkles className="h-3.5 w-3.5" />
-                  <span>Translated Output ({output.targetLanguage})</span>
+            <div className="p-5 flex flex-col gap-3">
+              <div className="flex items-center justify-between border-b border-border pb-2.5">
+                <span className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
+                  Translated Output ({output.targetLanguage})
                 </span>
-                <Badge variant="outline" className="text-xs">
+                <Badge variant="outline" className="text-[11px] font-medium">
                   {output.detectedTone || "Preserved Tone"}
                 </Badge>
               </div>
@@ -210,10 +202,10 @@ export default function TranslatePage() {
                 <Textarea
                   value={editableBody}
                   onChange={(e) => setEditableBody(e.target.value)}
-                  className="min-h-[180px] text-sm font-mono leading-relaxed p-4 rounded-xl bg-muted/20"
+                  className="min-h-[180px] text-xs font-mono leading-relaxed p-3.5 rounded-lg bg-background border border-input"
                 />
               ) : (
-                <div className="rounded-2xl border border-border/80 bg-muted/20 p-5 text-sm whitespace-pre-wrap leading-relaxed font-medium">
+                <div className="rounded-lg border border-border bg-secondary/30 p-4 text-xs sm:text-sm whitespace-pre-wrap leading-relaxed font-normal">
                   {editableBody || output.translatedText}
                 </div>
               )}

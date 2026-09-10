@@ -69,16 +69,16 @@ export default function LoginPage() {
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4 py-12">
-      <div className="w-full max-w-md space-y-6 rounded-3xl border border-border bg-card p-8 shadow-2xl">
+      <div className="w-full max-w-sm space-y-6 rounded-xl border border-border bg-card p-6 sm:p-8 shadow-sm">
         {/* Logo & Header */}
         <div className="text-center space-y-2">
-          <Link href="/" className="inline-flex items-center gap-2 font-bold tracking-tight">
-            <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-tr from-primary to-blue-400 text-white shadow-md shadow-primary/25">
-              <Mail className="h-6 w-6" />
+          <Link href="/" className="inline-flex items-center gap-2.5 font-bold tracking-tight">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
+              <Mail className="h-4 w-4" />
             </div>
-            <span className="text-xl font-bold">MailPilot</span>
+            <span className="text-lg font-semibold tracking-tight">MailPilot</span>
           </Link>
-          <h2 className="text-2xl font-bold tracking-tight text-foreground">
+          <h2 className="text-xl font-semibold tracking-tight text-foreground">
             Welcome back
           </h2>
           <p className="text-xs text-muted-foreground">
@@ -87,43 +87,43 @@ export default function LoginPage() {
         </div>
 
         {/* 1-Click Demo Login */}
-        <div className="rounded-2xl border border-primary/20 bg-primary/5 p-3.5 flex flex-col gap-2">
+        <div className="rounded-lg border border-border bg-secondary/40 p-3.5 flex flex-col gap-2">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-primary flex items-center gap-1.5">
-              <Sparkles className="h-3.5 w-3.5" />
+            <span className="text-xs font-semibold text-foreground flex items-center gap-1.5">
+              <Sparkles className="h-3.5 w-3.5 text-muted-foreground" />
               <span>Instant Demo Account</span>
             </span>
-            <Badge variant="success" className="text-[10px]">
+            <Badge variant="secondary" className="text-[10px] uppercase font-semibold">
               Ready
             </Badge>
           </div>
-          <p className="text-[11px] text-muted-foreground">
+          <p className="text-[11px] text-muted-foreground leading-relaxed">
             Test the full application instantly with our pre-configured demo user (Alex Morgan).
           </p>
           <Button
             type="button"
-            variant="default"
+            variant="outline"
             size="sm"
             onClick={handleDemoLogin}
             disabled={demoLoading}
-            className="w-full gap-2 rounded-xl text-xs font-semibold shadow-sm"
+            className="w-full gap-2 rounded-lg text-xs font-medium h-8 bg-card hover:bg-secondary"
           >
-            <UserCheck className="h-4 w-4" />
+            <UserCheck className="h-3.5 w-3.5" />
             <span>{demoLoading ? "Signing in..." : "1-Click Demo Sign In"}</span>
           </Button>
         </div>
 
         <div className="relative flex items-center justify-center">
           <div className="border-t border-border w-full" />
-          <span className="bg-card px-3 text-[11px] font-semibold text-muted-foreground uppercase">
-            Or sign in with email
+          <span className="bg-card px-2.5 text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
+            Or continue with email
           </span>
         </div>
 
         {/* Credentials Form */}
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-1.5">
-            <label className="text-xs font-semibold text-foreground">Email</label>
+            <label className="text-xs font-medium text-foreground">Email</label>
             <Input
               type="email"
               placeholder="you@example.com"
@@ -135,8 +135,8 @@ export default function LoginPage() {
 
           <div className="space-y-1.5">
             <div className="flex items-center justify-between">
-              <label className="text-xs font-semibold text-foreground">Password</label>
-              <Link href="/forgot-password" className="text-xs text-primary hover:underline">
+              <label className="text-xs font-medium text-foreground">Password</label>
+              <Link href="/forgot-password" className="text-xs text-muted-foreground hover:text-foreground">
                 Forgot password?
               </Link>
             </div>
@@ -149,7 +149,7 @@ export default function LoginPage() {
             />
           </div>
 
-          <Button type="submit" disabled={loading} className="w-full rounded-xl font-bold">
+          <Button type="submit" disabled={loading} className="w-full rounded-lg font-medium text-xs h-9">
             {loading ? "Signing in..." : "Sign In"}
           </Button>
         </form>
@@ -157,8 +157,8 @@ export default function LoginPage() {
         {/* Register Link */}
         <div className="text-center text-xs text-muted-foreground">
           Don't have an account?{" "}
-          <Link href="/register" className="font-semibold text-primary hover:underline">
-            Create a free account
+          <Link href="/register" className="font-medium text-foreground hover:underline">
+            Create an account
           </Link>
         </div>
       </div>
